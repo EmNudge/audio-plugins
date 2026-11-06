@@ -12,11 +12,14 @@ use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
 use crate::dsp::{Spectrum, BANDS, F_MAX, F_MIN};
+use crate::presets;
 use crate::{AirParams, HIGH_HZ, MID_HIGH_HZ};
 
 const BG: Color32 = Color32::from_rgb(0x07, 0x08, 0x10);
 const PANEL: Color32 = Color32::from_rgb(0x12, 0x14, 0x22);
 const GRID: Color32 = Color32::from_rgb(0x24, 0x28, 0x3c);
+/// Bar labels sit on top of the accent fill, so they need to be lighter than `TEXT_DIM`.
+const BAR_LABEL: Color32 = Color32::from_rgb(0xb4, 0xba, 0xd4);
 const TEXT_DIM: Color32 = Color32::from_rgb(0x6c, 0x72, 0x90);
 const SKY_TOP: [f32; 3] = [12.0, 20.0, 54.0];
 const SKY_BOTTOM: [f32; 3] = [5.0, 6.0, 13.0];
@@ -100,6 +103,8 @@ pub fn draw(
     follow(&mut state.dry_db, &spectrum.dry);
     follow(&mut state.wet_db, &spectrum.wet);
 
+    let theme = preset_kit::ui::Theme { fill: PANEL, hover: GRID, ink: rgba(LINE, 255.0), dim: TEXT_DIM };
+    preset_kit::ui::picker_top_right(ui, 20.0, &presets::BANK, &**params, setter, &theme);
     ui.label(egui::RichText::new("AURORA AIR").monospace().size(11.0).color(TEXT_DIM));
     ui.add_space(8.0);
     sky(ui, params, setter, state);
@@ -270,14 +275,14 @@ fn bar(ui: &mut Ui, setter: &ParamSetter, param: &FloatParam, label: &str, color
     painter.rect_filled(rect, 4.0, PANEL);
     let fill = Rect::from_min_size(rect.min, Vec2::new(rect.width() * norm, rect.height()));
     let [r, g, b, _] = color.to_array();
-    painter.rect_filled(fill, 4.0, Color32::from_rgba_unmultiplied(r, g, b, 70));
+    painter.rect_filled(fill, 4.0, Color32::from_rgba_unmultiplied(r, g, b, 36));
     painter.rect_filled(
         Rect::from_min_size(Pos2::new(fill.right() - 3.0, rect.top()), Vec2::new(3.0, rect.height())),
         1.5,
         color,
     );
-    painter.text(Pos2::new(rect.left() + 8.0, rect.center().y), Align2::LEFT_CENTER, label, FontId::monospace(10.0), TEXT_DIM);
-    painter.text(Pos2::new(rect.right() - 8.0, rect.center().y), Align2::RIGHT_CENTER, param.to_string(), FontId::monospace(11.0), color);
+    painter.text(Pos2::new(rect.left() + 8.0, rect.center().y), Align2::LEFT_CENTER, label, FontId::monospace(11.0), BAR_LABEL);
+    painter.text(Pos2::new(rect.right() - 8.0, rect.center().y), Align2::RIGHT_CENTER, param.to_string(), FontId::monospace(12.0), color);
     painter.rect_stroke(rect, 4.0, Stroke::new(1.0_f32, GRID), egui::StrokeKind::Inside);
 
     if response.drag_started() {

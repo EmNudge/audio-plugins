@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["xtask", "plugins/*"]
+members = ["xtask", "plugins/*", "crates/*"]
 
 [workspace.dependencies]
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", default-features = false }

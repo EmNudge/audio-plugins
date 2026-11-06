@@ -6,3 +6,27 @@ name = "Aurora Air"
 
 [detent]
 name = "Detent"
+
+[rime]
+name = "Rime"
+
+[kiln]
+name = "Kiln"
+
+[serpent]
+name = "Serpent"
+
+[doppel]
+name = "Doppel"
+
+[vice]
+name = "Vice"
+
+[firefly]
+name = "Firefly"
+
+[vault]
+name = "Vault"
+
+[skip]
+name = "Skip"

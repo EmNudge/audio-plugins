@@ -1,0 +1,12 @@
+[package]
+name = "ui_preview"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Renders a plugin editor to a PNG without a host or a window, for README screenshots"
+
+[dependencies]
+nih_plug.workspace = true
+nih_plug_egui.workspace = true
+egui_kittest = { version = "0.31", features = ["wgpu"] }
+image = { version = "0.25", default-features = false, features = ["png"] }

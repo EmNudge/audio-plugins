@@ -12,11 +12,13 @@ use std::f32::consts::TAU;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
-use crate::VibratoParams;
+use crate::{presets, VibratoParams};
 
 const BG: Color32 = Color32::from_rgb(0x14, 0x14, 0x17);
 const PANEL: Color32 = Color32::from_rgb(0x1e, 0x1e, 0x23);
 const GRID: Color32 = Color32::from_rgb(0x2c, 0x2c, 0x33);
+/// Bar labels sit on top of the accent fill, so they need to be lighter than `TEXT_DIM`.
+const BAR_LABEL: Color32 = Color32::from_rgb(0xb8, 0xb8, 0xc4);
 const TEXT_DIM: Color32 = Color32::from_rgb(0x6a, 0x6a, 0x75);
 const ACCENT: Color32 = Color32::from_rgb(0xff, 0x5a, 0x1f);
 const CYAN: Color32 = Color32::from_rgb(0x2e, 0xe6, 0xd6);
@@ -35,7 +37,7 @@ pub fn draw(ui: &mut Ui, params: &Arc<VibratoParams>, setter: &ParamSetter, phas
     let depth = params.depth.value();
     let mix = params.mix.value();
 
-    header(ui, rate, depth, mix);
+    header(ui, params, setter, rate, depth, mix);
     ui.add_space(8.0);
     trace(ui, params, setter, rate, depth, mix, phase.load(Ordering::Relaxed));
     ui.add_space(10.0);
@@ -44,9 +46,17 @@ pub fn draw(ui: &mut Ui, params: &Arc<VibratoParams>, setter: &ParamSetter, phas
     bar(ui, setter, &params.mix, "MIX", CYAN);
 }
 
-fn header(ui: &mut Ui, rate: f32, depth: f32, mix: f32) {
+fn header(ui: &mut Ui, params: &Arc<VibratoParams>, setter: &ParamSetter, rate: f32, depth: f32, mix: f32) {
+    // The readouts below fill the right of their row, so the preset picker gets a row of its own,
+    // shared with the title (about 80px wide; the picker is 206px of the 492px content width).
     ui.horizontal(|ui| {
+        ui.set_min_height(20.0);
+        let theme = preset_kit::ui::Theme { fill: PANEL, hover: GRID, ink: Color32::WHITE, dim: TEXT_DIM };
+        preset_kit::ui::picker_top_right(ui, 20.0, &presets::BANK, &**params, setter, &theme);
         ui.label(egui::RichText::new("FAKE VIBRATO").monospace().size(11.0).color(TEXT_DIM));
+    });
+    ui.add_space(4.0);
+    ui.horizontal(|ui| {
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             for (text, color) in [
                 (format!("{:>3.0}%", mix * 100.0), TEXT_DIM),
@@ -187,7 +197,7 @@ fn bar(ui: &mut Ui, setter: &ParamSetter, param: &FloatParam, label: &str, color
     painter.rect_filled(rect, 4.0, PANEL);
     let fill = Rect::from_min_size(rect.min, Vec2::new(rect.width() * norm, rect.height()));
     let [r, g, b, _] = color.to_array();
-    painter.rect_filled(fill, 4.0, Color32::from_rgba_unmultiplied(r, g, b, 70));
+    painter.rect_filled(fill, 4.0, Color32::from_rgba_unmultiplied(r, g, b, 36));
     painter.rect_filled(
         Rect::from_min_size(Pos2::new(fill.right() - 3.0, rect.top()), Vec2::new(3.0, rect.height())),
         1.5,
@@ -197,14 +207,14 @@ fn bar(ui: &mut Ui, setter: &ParamSetter, param: &FloatParam, label: &str, color
         Pos2::new(rect.left() + 8.0, rect.center().y),
         Align2::LEFT_CENTER,
         label,
-        FontId::monospace(10.0),
-        TEXT_DIM,
+        FontId::monospace(11.0),
+        BAR_LABEL,
     );
     painter.text(
         Pos2::new(rect.right() - 8.0, rect.center().y),
         Align2::RIGHT_CENTER,
         param.to_string(),
-        FontId::monospace(11.0),
+        FontId::monospace(12.0),
         color,
     );
     painter.rect_stroke(rect, 4.0, Stroke::new(1.0, GRID), egui::StrokeKind::Inside);

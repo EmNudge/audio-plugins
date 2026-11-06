@@ -14,7 +14,7 @@ use std::sync::atomic::Ordering::Relaxed;
 use std::sync::Arc;
 
 use crate::scale::{self, Scale, NOTE_NAMES};
-use crate::{DetentParams, Key, Target, Telemetry};
+use crate::{presets, DetentParams, Key, Target, Telemetry};
 
 const BG: Color32 = Color32::from_rgb(0x10, 0x10, 0x12);
 const PANEL: Color32 = Color32::from_rgb(0x1b, 0x1b, 0x1f);
@@ -22,6 +22,8 @@ const KEY_OFF: Color32 = Color32::from_rgb(0x26, 0x26, 0x2c);
 const GRID: Color32 = Color32::from_rgb(0x30, 0x30, 0x38);
 const TEXT_DIM: Color32 = Color32::from_rgb(0x72, 0x72, 0x7e);
 const LINE: Color32 = Color32::from_rgb(0xea, 0xea, 0xee);
+/// Bar labels sit on top of the accent fill, so they need to be lighter than `TEXT_DIM`.
+const BAR_LABEL: Color32 = Color32::from_rgb(0xc2, 0xc2, 0xcc);
 const RAW: Color32 = Color32::from_rgb(0x8a, 0x8a, 0x96);
 const ACCENT: [u8; 3] = [0xff, 0x5a, 0x1f];
 const CYAN: [u8; 3] = [0x2e, 0xe6, 0xd6];
@@ -108,7 +110,13 @@ pub fn draw(ui: &mut Ui, params: &Arc<DetentParams>, setter: &ParamSetter, telem
     };
     let key_pc = params.key.value().to_index();
 
-    ui.label(RichText::new("DETENT").monospace().size(11.0).color(TEXT_DIM));
+    // Header row, 20 px tall: title on the left, preset picker flush right. The picker is drawn at
+    // the row's top and is exactly as tall as the row, so the dial below is not touched.
+    let (header, _) = ui.allocate_exact_size(Vec2::new(ui.available_width(), 20.0), Sense::hover());
+    ui.painter().text(header.left_center(), Align2::LEFT_CENTER, "DETENT", FontId::monospace(11.0), TEXT_DIM);
+    let theme = preset_kit::ui::Theme { fill: PANEL, hover: GRID, ink: LINE, dim: TEXT_DIM };
+    let origin = Pos2::new(header.right() - preset_kit::ui::WIDTH, header.top());
+    preset_kit::ui::picker(ui, origin, header.height(), &presets::BANK, &**params, setter, &theme);
     ui.add_space(6.0);
 
     let controls_height = 88.0 + 12.0 + 28.0 + 6.0 + 28.0;
@@ -383,10 +391,10 @@ fn bar(ui: &mut Ui, setter: &ParamSetter, param: &FloatParam, label: &str) {
 
     painter.rect_filled(rect, 4.0, PANEL);
     let fill = Rect::from_min_size(rect.min, Vec2::new(rect.width() * norm, rect.height()));
-    painter.rect_filled(fill, 4.0, accent(70));
+    painter.rect_filled(fill, 4.0, accent(36));
     painter.rect_filled(Rect::from_min_size(Pos2::new(fill.right() - 3.0, rect.top()), Vec2::new(3.0, rect.height())), 1.5, accent(255));
-    painter.text(Pos2::new(rect.left() + 8.0, rect.center().y), Align2::LEFT_CENTER, label, FontId::monospace(10.0), TEXT_DIM);
-    painter.text(Pos2::new(rect.right() - 8.0, rect.center().y), Align2::RIGHT_CENTER, param.to_string(), FontId::monospace(11.0), accent(255));
+    painter.text(Pos2::new(rect.left() + 8.0, rect.center().y), Align2::LEFT_CENTER, label, FontId::monospace(11.0), BAR_LABEL);
+    painter.text(Pos2::new(rect.right() - 8.0, rect.center().y), Align2::RIGHT_CENTER, param.to_string(), FontId::monospace(12.0), LINE);
     painter.rect_stroke(rect, 4.0, Stroke::new(1.0_f32, GRID), egui::StrokeKind::Inside);
 
     if response.drag_started() {

@@ -4,7 +4,8 @@ use std::f32::consts::{LN_2, TAU};
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
-mod ui;
+pub mod presets;
+pub mod ui;
 
 const MAX_DELAY_MS: f32 = 25.0;
 const MAX_CHANNELS: usize = 2;
@@ -12,7 +13,7 @@ const MAX_CHANNELS: usize = 2;
 /// A vibrato is a pitch wobble. Sweeping a delay line's length with a sine LFO changes the pitch of
 /// the delayed signal by `-d(delay)/dt`, so `depth` is specified in cents and converted to a delay
 /// excursion for the current rate.
-struct FakeVibrato {
+pub struct FakeVibrato {
     params: Arc<VibratoParams>,
     sample_rate: f32,
     lines: [Vec<f32>; MAX_CHANNELS],
@@ -23,7 +24,7 @@ struct FakeVibrato {
 }
 
 #[derive(Params)]
-struct VibratoParams {
+pub struct VibratoParams {
     #[persist = "editor-state"]
     editor_state: Arc<EguiState>,
 
@@ -75,7 +76,7 @@ impl Default for FakeVibrato {
 
 impl Plugin for FakeVibrato {
     const NAME: &'static str = "Fake Vibrato";
-    const VENDOR: &'static str = "calvin";
+    const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");

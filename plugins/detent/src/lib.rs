@@ -3,14 +3,15 @@ use nih_plug_egui::{create_egui_editor, egui, EguiState};
 use std::sync::atomic::{AtomicBool, AtomicU32};
 use std::sync::Arc;
 
-mod control;
-mod engine;
+pub mod control;
+pub mod engine;
 mod pitch;
+pub mod presets;
 mod psola;
-mod scale;
+pub mod scale;
 #[cfg(test)]
 mod tests;
-mod ui;
+pub mod ui;
 
 use control::Settings;
 use engine::Engine;
@@ -174,7 +175,7 @@ pub struct Telemetry {
     pub held_mask: AtomicU32,
 }
 
-struct Detent {
+pub struct Detent {
     params: Arc<DetentParams>,
     /// One engine per range, all allocated up front so switching never allocates.
     engines: Vec<Engine>,
@@ -228,7 +229,7 @@ impl Detent {
 impl Plugin for Detent {
     const NAME: &'static str = "Detent";
     const MIDI_INPUT: MidiConfig = MidiConfig::Basic;
-    const VENDOR: &'static str = "calvin";
+    const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");

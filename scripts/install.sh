@@ -24,5 +24,11 @@ for plugin in "${plugins[@]}"; do
   cp -R "$bundle" "$dest/"
   codesign -v "$dest/$name.vst3"
   echo "installed $name"
+
+  # Factory presets as .vstpreset files, where REAPER and other hosts look for them.
+  if [ -f "plugins/$plugin/examples/write_presets.rs" ]; then
+    cargo run -q -p "$plugin" --release --example write_presets -- "$HOME/Library/Audio/Presets/Clowd/$name"
+    echo "installed $name presets"
+  fi
 done
 echo "Restart your DAW (or clear its plugin cache and re-scan) to load the new builds."

@@ -2,8 +2,9 @@ use nih_plug::prelude::*;
 use nih_plug_egui::{create_egui_editor, egui, EguiState};
 use std::sync::Arc;
 
-mod dsp;
-mod ui;
+pub mod dsp;
+pub mod presets;
+pub mod ui;
 
 use dsp::{Analyzer, Chain, LATENCY};
 
@@ -13,7 +14,7 @@ pub const HIGH_HZ: f32 = 9000.0;
 const MID_HIGH_GAIN: f32 = 1.0;
 const HIGH_GAIN: f32 = 1.5;
 
-struct AuroraAir {
+pub struct AuroraAir {
     params: Arc<AirParams>,
     /// `[channel][band]`: band 0 is Mid High, band 1 is High.
     chains: [[Chain; 2]; 2],
@@ -83,7 +84,7 @@ impl Default for AuroraAir {
 
 impl Plugin for AuroraAir {
     const NAME: &'static str = "Aurora Air";
-    const VENDOR: &'static str = "calvin";
+    const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");

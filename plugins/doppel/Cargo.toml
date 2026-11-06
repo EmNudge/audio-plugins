@@ -1,0 +1,17 @@
+[package]
+name = "doppel"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Automatic double tracking: a drifting tape copy of a vocal, drawn as two lanes tied by threads"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+nih_plug = { workspace = true, features = ["assert_process_allocs", "vst3"] }
+nih_plug_egui.workspace = true
+preset_kit = { path = "../../crates/preset_kit" }
+
+[dev-dependencies]
+ui_preview = { path = "../../crates/ui_preview" }
