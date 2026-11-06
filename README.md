@@ -30,6 +30,7 @@ and hands the editor's `ui::draw` to `crates/ui_preview`, which runs it in an `e
 on a wgpu renderer (no window, no host), and `crates/ui_preview`'s `stitch` example packs the results into `all.png`. Parameter edits are ignored, so the knobs show the defaults.
 To add one for a new plugin, make its `ui` and `dsp` modules `pub`, add `ui_preview` as a
 dev-dependency and copy `plugins/rime/examples/screenshot.rs`.
+| [`smolder`](plugins/smolder) | Distortion with eight waveshapers, optional 3-band split with a model and drive per band, LFO or envelope modulation, bias, low cut, tone, 1x to 8x oversampling and mix. Fifteen factory presets, user presets, and live transfer curve, waveform and harmonic views. |
 
 ## Build and install
 

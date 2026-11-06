@@ -30,3 +30,6 @@ name = "Vault"
 
 [skip]
 name = "Skip"
+
+[smolder]
+name = "Smolder"
