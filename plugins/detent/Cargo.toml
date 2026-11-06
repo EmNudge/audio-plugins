@@ -1,0 +1,13 @@
+[package]
+name = "detent"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Automatic pitch correction with a mechanical pitch dial"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+nih_plug = { workspace = true, features = ["assert_process_allocs", "vst3"] }
+nih_plug_egui.workspace = true

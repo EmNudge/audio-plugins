@@ -1,0 +1,13 @@
+[package]
+name = "aurora_air"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Two-band high-frequency exciter with a live spectrum sky"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+nih_plug = { workspace = true, features = ["assert_process_allocs", "vst3"] }
+nih_plug_egui.workspace = true

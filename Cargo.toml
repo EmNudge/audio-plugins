@@ -1,0 +1,11 @@
+[workspace]
+resolver = "2"
+members = ["xtask", "plugins/*"]
+
+[workspace.dependencies]
+nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", default-features = false }
+nih_plug_egui = { git = "https://github.com/robbert-vdh/nih-plug.git" }
+
+[profile.release]
+lto = "thin"
+strip = "symbols"
