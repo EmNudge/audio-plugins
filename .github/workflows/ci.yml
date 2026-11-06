@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # Work out which plugins the change touches (own files, or a shared crate they depend on).
+  affected:
+    runs-on: ubuntu-latest
+    outputs:
+      plugins: ${{ steps.affected.outputs.plugins }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+      - id: affected
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          else
+            base="${{ github.event.before }}"
+          fi
+          # An unknown base (new branch, force push) builds everything.
+          git cat-file -e "$base^{commit}" 2>/dev/null || base=""
+          plugins=$(python3 scripts/affected.py "$base")
+          echo "plugins=$plugins" >> "$GITHUB_OUTPUT"
+
+  plugin:
+    needs: affected
+    if: needs.affected.outputs.plugins != '[]'
+    name: ${{ matrix.plugin }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        plugin: ${{ fromJSON(needs.affected.outputs.plugins) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.plugin }}
+      - name: Test
+        run: cargo test -p ${{ matrix.plugin }} --release --locked
+      - name: Bundle
+        run: cargo xtask bundle -p ${{ matrix.plugin }} --release --locked
+      - name: Check bundle
+        run: |
+          name=$(awk -v key="[${{ matrix.plugin }}]" '$0 == key { found = 1; next } found && /^name/ { gsub(/.*= *"|"$/, ""); print; exit }' bundler.toml)
+          [ -d "target/bundled/$name.vst3" ]
+          codesign -v "target/bundled/$name.vst3"
+
+  # One required check to point branch protection at, whatever subset of plugins ran.
+  ci:
+    needs: [affected, plugin]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          [ "${{ needs.affected.result }}" = "success" ] || exit 1
+          [ "${{ needs.plugin.result }}" = "success" ] || [ "${{ needs.plugin.result }}" = "skipped" ]

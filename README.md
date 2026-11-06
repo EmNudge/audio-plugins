@@ -47,6 +47,18 @@ and the DAW keeps the old binary loaded until it quits.
 To build without installing: `cargo xtask bundle <plugin> --release`.
 Plugin display names live in `bundler.toml`.
 
+## CI and releases
+
+`.github/workflows/ci.yml` runs on every push to `main` and every pull request. `scripts/affected.py`
+works out which plugins the change touches (a plugin's own files, or a shared crate such as
+`preset_kit` that it depends on; workspace-level files rebuild everything), and each one is tested,
+bundled and signature-checked on macOS as its own job. The `ci` job is the single check to require.
+
+To publish a release, push a version tag (`jj tag set v1.0.0 -r main && jj git push`, or
+`git tag v1.0.0 && git push --tags`). `.github/workflows/release.yml` tests the workspace, bundles every
+plugin, and creates a GitHub release with one zip per plugin, an all-in-one zip and `SHA256SUMS`.
+The builds are for the runner's architecture (Apple silicon) and ad-hoc signed.
+
 ## Presets
 
 Every plugin has factory presets in a `presets.rs`, built on the shared `crates/preset_kit`. A preset
