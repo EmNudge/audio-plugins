@@ -2,10 +2,22 @@
 
 ![Vice](../../docs/screenshots/vice.png)
 
-Three-band upward and downward compressor: LR4 crossovers, a floor that lifts quiet parts and a ceiling that pushes peaks down, depth, time, per-band gain and a phase-coherent dry mix. Two toothed jaws close on three live level bars; drag the jaws and the crossover dividers. Twenty-four factory presets.
+Three-band upward and downward compressor.
+
+- LR4 crossovers.
+- A floor lifts quiet parts. A ceiling pushes peaks down.
+- Depth, time and gain per band.
+- Phase-coherent dry mix.
+
+## Display
+
+- Two toothed jaws close on three live level bars.
+- Drag the jaws and the crossover dividers.
+
+Twenty-four factory presets.
 
 ```sh
-scripts/install.sh vice    # build and install the VST3
+scripts/install.sh vice
 ```
 
 See the [main README](../../README.md) for building, testing and the other plugins.
