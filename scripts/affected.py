@@ -5,7 +5,7 @@ Usage: scripts/affected.py [base-ref]   (no base ref, or a global change, means 
 
 A plugin is affected when its own directory changed, or any workspace crate it depends on
 (directly or not) did. Changes to the workspace manifest, lockfile, toolchain config, bundler.toml
-or xtask rebuild everything.
+or xtask rebuild everything. Markdown files and docs/ are ignored.
 """
 import json
 import os
@@ -30,6 +30,8 @@ if not base or set(base) == {"0"}:
     sys.exit(0)
 
 changed = subprocess.check_output(["git", "diff", "--name-only", base, "HEAD"], cwd=root, text=True).split()
+# Docs never affect a build.
+changed = [f for f in changed if not (f.endswith(".md") or f.startswith("docs/"))]
 if any(f == g or (g.endswith("/") and f.startswith(g)) for f in changed for g in GLOBAL):
     print(json.dumps(plugins))
     sys.exit(0)
