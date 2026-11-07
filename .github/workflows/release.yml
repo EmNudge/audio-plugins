@@ -1,0 +1,56 @@
+name: Release
+
+# Push a tag like v1.2.0 to build every plugin and publish a GitHub release with the bundles.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: release
+      - name: Test
+        run: cargo test --workspace --release --locked
+      - name: Bundle
+        run: |
+          args=()
+          for dir in plugins/*/; do args+=(-p "$(basename "$dir")"); done
+          cargo xtask bundle "${args[@]}" --release --locked
+      - name: Package
+        run: |
+          version="${GITHUB_REF_NAME:-dev}"
+          mkdir dist
+          cd target/bundled
+          for bundle in *.vst3; do
+            codesign -v "$bundle"
+            name="${bundle%.vst3}"
+            ditto -c -k --keepParent "$bundle" "../../dist/${name// /-}-$version-macos.zip"
+          done
+          cd ../../dist
+          zip -q "all-plugins-$version-macos.zip" -- *-"$version"-macos.zip
+          shasum -a 256 *.zip > SHA256SUMS
+      - name: Publish
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "$GITHUB_REF_NAME" --generate-notes --verify-tag
+      - name: Keep artifacts (manual runs)
+        if: github.ref_type != 'tag'
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundles
+          path: dist/*
