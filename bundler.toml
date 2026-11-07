@@ -2,34 +2,58 @@
 name = "Fake Vibrato"
 
 [aurora_air]
-name = "Aurora Air"
+name = "Aurora Air Exciter"
 
 [detent]
-name = "Detent"
+name = "Detent Pitch Corrector"
 
 [rime]
-name = "Rime"
+name = "Rime Resonance Suppressor"
 
 [kiln]
-name = "Kiln"
+name = "Kiln Saturator"
 
 [serpent]
-name = "Serpent"
+name = "Serpent De-esser"
 
 [doppel]
-name = "Doppel"
+name = "Doppel Doubler"
 
 [vice]
-name = "Vice"
+name = "Vice Compressor"
 
 [firefly]
-name = "Firefly"
+name = "Firefly Opto Compressor"
 
 [vault]
-name = "Vault"
+name = "Vault Reverb"
 
 [skip]
-name = "Skip"
+name = "Skip Delay"
 
 [smolder]
-name = "Smolder"
+name = "Smolder Distortion"
+
+[carousel]
+name = "Carousel Chorus"
+
+[chassis]
+name = "Chassis Robot Voice"
+
+[sunder]
+name = "Sunder Ring Mod"
+
+[bedrock]
+name = "Bedrock Bass Exciter"
+
+[tines]
+name = "Tines Resonator"
+
+[specimen]
+name = "Specimen Spectral Freeze"
+
+[loom]
+name = "Loom Spectral Playheads"
+
+[abacus]
+name = "Abacus Sine Resynth"

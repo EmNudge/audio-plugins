@@ -112,7 +112,7 @@ impl Default for Rime {
 }
 
 impl Plugin for Rime {
-    const NAME: &'static str = "Rime";
+    const NAME: &'static str = "Rime Resonance Suppressor";
     const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
@@ -198,7 +198,7 @@ impl Plugin for Rime {
 }
 
 impl Vst3Plugin for Rime {
-    const VST3_CLASS_ID: [u8; 16] = *b"CalvinRimeResSup";
+    const VST3_CLASS_ID: [u8; 16] = *b"ClowdRimeResSup_";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx, Vst3SubCategory::Filter];
 }
 

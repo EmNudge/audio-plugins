@@ -15,7 +15,6 @@ fn main() {
     params.mod_source = EnumParam::new("Modulation", ModSource::Lfo);
     params.band[0] = BandParams::new(Model::Tape);
     params.band[2] = BandParams::new(Model::Crunch);
-    *params.preset_name.lock().unwrap() = "Bass Warmth".into();
     let params = Arc::new(params);
 
     let live = Arc::new(smolder::Live::default());

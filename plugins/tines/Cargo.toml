@@ -1,0 +1,17 @@
+[package]
+name = "tines"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Tuned resonator: a bank of modal resonators (string, pipe, bar, bell, drum) played from a knob, MIDI or the input's own pitch"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+nih_plug = { workspace = true, features = ["assert_process_allocs", "vst3"] }
+nih_plug_egui.workspace = true
+preset_kit = { path = "../../crates/preset_kit" }
+
+[dev-dependencies]
+ui_preview = { path = "../../crates/ui_preview" }

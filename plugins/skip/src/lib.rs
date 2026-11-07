@@ -142,7 +142,7 @@ impl Default for Skip {
 }
 
 impl Plugin for Skip {
-    const NAME: &'static str = "Skip";
+    const NAME: &'static str = "Skip Delay";
     const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
@@ -224,7 +224,7 @@ impl Plugin for Skip {
 }
 
 impl Vst3Plugin for Skip {
-    const VST3_CLASS_ID: [u8; 16] = *b"CalvinSkipStones";
+    const VST3_CLASS_ID: [u8; 16] = *b"ClowdSkipStones_";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx, Vst3SubCategory::Delay];
 }
 

@@ -102,7 +102,7 @@ impl Default for Vice {
 }
 
 impl Plugin for Vice {
-    const NAME: &'static str = "Vice";
+    const NAME: &'static str = "Vice Compressor";
     const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
@@ -196,7 +196,7 @@ impl Plugin for Vice {
 }
 
 impl Vst3Plugin for Vice {
-    const VST3_CLASS_ID: [u8; 16] = *b"CalvinViceSqueez";
+    const VST3_CLASS_ID: [u8; 16] = *b"ClowdViceSqueez_";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx, Vst3SubCategory::Dynamics];
 }
 

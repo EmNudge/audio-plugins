@@ -202,9 +202,9 @@ mod tests {
     #[test]
     fn vstpreset_layout() {
         let state = br#"{"x":1}"#;
-        let file = vstpreset(*b"CalvinKilnSatur1", state);
+        let file = vstpreset(*b"ClowdKilnSatur1_", state);
         assert_eq!(&file[..4], b"VST3");
-        assert_eq!(&file[8..40], b"43616C76696E4B696C6E536174757231");
+        assert_eq!(&file[8..40], b"436C6F77644B696C6E5361747572315F");
         let list = i64::from_le_bytes(file[40..48].try_into().unwrap()) as usize;
         assert_eq!(&file[list..list + 4], b"List");
         assert_eq!(&file[list + 8..list + 12], b"Comp");
