@@ -2,10 +2,22 @@
 
 ![Smolder](../../docs/screenshots/smolder.png)
 
-Distortion with eight waveshapers (tube, tape, diode, fold, clip, crunch, rectify, crush), bias, a pre-shaper low cut, a tilt tone control, 1x to 8x oversampling and a dry/wet mix. Switch to 3-band mode to split the signal with Linkwitz-Riley crossovers and give each band its own model, drive trim and level. An LFO (sine, triangle, square) or an envelope follower can modulate drive, bias or tone. The editor draws the transfer curve, the test-sine waveform and the first twelve harmonics (odd in red, even in gold) from the same shaper the audio uses. Fifteen factory presets, also written as `.vstpreset` files for hosts such as REAPER.
+Distortion.
+
+- Eight waveshapers: tube, tape, diode, fold, clip, crunch, rectify, crush.
+- Bias, pre-shaper low cut, tilt tone, 1x to 8x oversampling and mix.
+- 3-band mode (Linkwitz-Riley) gives each band its own model, drive and level.
+- An LFO or envelope follower can modulate drive, bias or tone.
+
+## Display
+
+- The transfer curve, the test-sine waveform and the first twelve harmonics (odd in red, even in gold).
+- All three are drawn from the same shaper the audio uses.
+
+Fifteen factory presets.
 
 ```sh
-scripts/install.sh smolder    # build and install the VST3
+scripts/install.sh smolder
 ```
 
 See the [main README](../../README.md) for building, testing and the other plugins.

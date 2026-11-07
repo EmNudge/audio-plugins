@@ -2,10 +2,23 @@
 
 ![Firefly](../../docs/screenshots/firefly.png)
 
-Opto compressor: a two-stage photocell whose release depends on how hard and how long it has been worked, a frequency-weighted sidechain, Compress/Limit, a 4x oversampled tube output stage and parallel mix. The display hangs the gain reduction like icicles of light, the slow memory in magenta under the fast stage in lime, with the threshold as a drag handle. Twenty-four factory presets.
+Opto compressor.
+
+- A two-stage photocell. Release depends on how hard and how long it has been worked.
+- Frequency-weighted sidechain.
+- Compress or Limit.
+- 4x oversampled tube output stage and parallel mix.
+
+## Display
+
+- Gain reduction hangs like icicles of light.
+- The slow memory is magenta, under the fast stage in lime.
+- Drag the threshold.
+
+Twenty-four factory presets.
 
 ```sh
-scripts/install.sh firefly    # build and install the VST3
+scripts/install.sh firefly
 ```
 
 See the [main README](../../README.md) for building, testing and the other plugins.
