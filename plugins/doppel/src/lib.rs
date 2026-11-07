@@ -90,7 +90,7 @@ impl Default for Doppel {
 }
 
 impl Plugin for Doppel {
-    const NAME: &'static str = "Doppel";
+    const NAME: &'static str = "Doppel Doubler";
     const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
@@ -178,7 +178,7 @@ impl Plugin for Doppel {
 }
 
 impl Vst3Plugin for Doppel {
-    const VST3_CLASS_ID: [u8; 16] = *b"CalvinDoppelTwin";
+    const VST3_CLASS_ID: [u8; 16] = *b"ClowdDoppelTwin_";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
         &[Vst3SubCategory::Fx, Vst3SubCategory::Modulation];
 }

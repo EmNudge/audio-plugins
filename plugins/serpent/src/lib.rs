@@ -116,7 +116,7 @@ impl Serpent {
 }
 
 impl Plugin for Serpent {
-    const NAME: &'static str = "Serpent";
+    const NAME: &'static str = "Serpent De-esser";
     const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
@@ -232,7 +232,7 @@ impl Plugin for Serpent {
 }
 
 impl Vst3Plugin for Serpent {
-    const VST3_CLASS_ID: [u8; 16] = *b"CalvinSerpentDsr";
+    const VST3_CLASS_ID: [u8; 16] = *b"ClowdSerpentDsr_";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx, Vst3SubCategory::Dynamics];
 }
 

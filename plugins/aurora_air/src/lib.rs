@@ -83,7 +83,7 @@ impl Default for AuroraAir {
 }
 
 impl Plugin for AuroraAir {
-    const NAME: &'static str = "Aurora Air";
+    const NAME: &'static str = "Aurora Air Exciter";
     const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
@@ -173,7 +173,7 @@ impl Plugin for AuroraAir {
 }
 
 impl Vst3Plugin for AuroraAir {
-    const VST3_CLASS_ID: [u8; 16] = *b"CalvinAuroraAirF";
+    const VST3_CLASS_ID: [u8; 16] = *b"ClowdAuroraAirF_";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx, Vst3SubCategory::Filter];
 }
 

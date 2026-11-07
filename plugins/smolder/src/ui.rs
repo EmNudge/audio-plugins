@@ -15,7 +15,7 @@ use std::sync::atomic::Ordering;
 use std::sync::Arc;
 
 use crate::dsp::{shape, Bands, Model, ModSource};
-use crate::presets::{self, Preset};
+use crate::presets;
 use crate::{Live, SmolderParams, BAND_COUNT};
 
 const BG: Color32 = Color32::from_rgb(0x0d, 0x09, 0x07);
@@ -40,22 +40,12 @@ pub fn background() -> Color32 {
 pub struct UiState {
     /// The band the three views show in 3-band mode.
     focus: usize,
-    factory: Vec<Preset>,
-    user: Vec<Preset>,
-    save_open: bool,
-    save_name: String,
-    message: String,
 }
 
 impl Default for UiState {
     fn default() -> Self {
         Self {
             focus: 1,
-            factory: presets::factory(),
-            user: presets::load_user(),
-            save_open: false,
-            save_name: String::new(),
-            message: String::new(),
         }
     }
 }
@@ -65,7 +55,7 @@ pub fn draw(ui: &mut Ui, params: &Arc<SmolderParams>, setter: &ParamSetter, live
     ui.ctx().request_repaint();
     egui::ScrollArea::vertical().auto_shrink(false).show(ui, |ui| {
         ui.spacing_mut().item_spacing.y = 6.0;
-        preset_bar(ui, params, setter, state);
+        preset_bar(ui, params, setter);
         ui.add_space(4.0);
 
         let multi = params.bands.value() == Bands::Multi;
@@ -153,77 +143,11 @@ fn section(ui: &mut Ui, text: &str) {
     ui.label(egui::RichText::new(text).monospace().size(10.0).color(TEXT_DIM));
 }
 
-fn load(params: &SmolderParams, setter: &ParamSetter, preset: &Preset) {
-    presets::apply(params, setter, preset);
-    *params.preset_name.lock().unwrap() = preset.name.clone();
-}
-
-fn preset_bar(ui: &mut Ui, params: &Arc<SmolderParams>, setter: &ParamSetter, state: &mut UiState) {
-    let current = params.preset_name.lock().unwrap().clone();
-    let all: Vec<&Preset> = state.factory.iter().chain(state.user.iter()).collect();
-    let index = all.iter().position(|p| p.name == current);
-    let mut pick: Option<Preset> = None;
-
-    ui.horizontal(|ui| {
-        ui.label(egui::RichText::new("SMOLDER").monospace().size(11.0).color(TEXT_DIM));
-        ui.add_space(12.0);
-        let step = |delta: isize| {
-            let n = all.len() as isize;
-            let from = index.map_or(if delta > 0 { -1 } else { 0 }, |i| i as isize);
-            all[(from + delta).rem_euclid(n) as usize].clone()
-        };
-        if ui.button("<").clicked() {
-            pick = Some(step(-1));
-        }
-        egui::ComboBox::from_id_salt("preset").width(220.0).selected_text(current.as_str()).show_ui(ui, |ui| {
-            for p in &state.factory {
-                if ui.selectable_label(p.name == current, &p.name).clicked() {
-                    pick = Some(p.clone());
-                }
-            }
-            if !state.user.is_empty() {
-                ui.separator();
-                ui.label(egui::RichText::new("USER").monospace().size(9.0).color(TEXT_DIM));
-                for p in &state.user {
-                    if ui.selectable_label(p.name == current, &p.name).clicked() {
-                        pick = Some(p.clone());
-                    }
-                }
-            }
-        });
-        if ui.button(">").clicked() {
-            pick = Some(step(1));
-        }
-        if ui.button("Save").clicked() {
-            state.save_open = !state.save_open;
-            state.save_name = if state.user.iter().any(|p| p.name == current) { current.clone() } else { String::new() };
-            state.message.clear();
-        }
-    });
-    if let Some(p) = pick {
-        load(params, setter, &p);
-    }
-
-    if state.save_open {
-        ui.horizontal(|ui| {
-            ui.add(egui::TextEdit::singleline(&mut state.save_name).hint_text("Preset name").desired_width(220.0));
-            if ui.button("Save preset").clicked() && !state.save_name.trim().is_empty() {
-                let name = state.save_name.trim().to_string();
-                match presets::save_user(&presets::capture(params, &name)) {
-                    Ok(()) => {
-                        state.user = presets::load_user();
-                        *params.preset_name.lock().unwrap() = name;
-                        state.save_open = false;
-                        state.message.clear();
-                    }
-                    Err(e) => state.message = format!("Could not save: {e}"),
-                }
-            }
-            if !state.message.is_empty() {
-                ui.label(egui::RichText::new(&state.message).color(RED));
-            }
-        });
-    }
+fn preset_bar(ui: &mut Ui, params: &Arc<SmolderParams>, setter: &ParamSetter) {
+    let (rect, _) = ui.allocate_exact_size(Vec2::new(ui.available_width(), 24.0), Sense::hover());
+    ui.painter_at(rect).text(rect.left_center(), Align2::LEFT_CENTER, "SMOLDER", FontId::monospace(11.0), TEXT_DIM);
+    let theme = preset_kit::ui::Theme { fill: PANEL, hover: GRID, ink: GOLD, dim: TEXT_DIM };
+    preset_kit::ui::picker(ui, Pos2::new(rect.left() + 76.0, rect.top()), rect.height(), &presets::BANK, &**params, setter, &theme);
 }
 
 /// A band header: highlighted when its band is the one the views show. True when clicked.

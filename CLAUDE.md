@@ -21,8 +21,8 @@ Make plugins that are **visually distinctive and technically serious**. Both hal
   controls live (drag handles on the graph) wherever that makes sense. No generic grey rows of knobs
   and a spectrum analyser.
 - **One metaphor per plugin**, with its own palette, so the plugins look related but not alike.
-  Existing ones: Aurora Air (night-sky skyline, neon aurora), Detent (pitch dial and scrolling
-  tape), Rime (amber ember spectrum, ice icicles for each suppressed resonance), Vault (a perspective tunnel of arches, one per slice of the reverb tail), Skip (a stone skipping across a log-time pond, one arc per trip round the delay's feedback loop).
+  Existing ones: Aurora Air (night-sky skyline, neon aurora), Bedrock (the same scene upside down: a mountain-ridge spectrum above the ground line and the added bass as magma hanging below it, with a bridge from the tracked note to its octave), Detent (pitch dial and scrolling
+  tape), Rime (amber ember spectrum, ice icicles for each suppressed resonance), Vault (a perspective tunnel of arches, one per slice of the reverb tail), Skip (a stone skipping across a log-time pond, one arc per trip round the delay's feedback loop), Carousel (voices riding a carousel, angle is LFO phase and radius is delay), Chassis (a robot torso seen as a spectrum: vent-grille slats in three bays, chest orange, body lime, shell cyan, split by draggable bulkheads, with needles for the pitch going in and out), Sunder (a spectrum split at the carrier: sum sidebands cyan, differences magenta folding off 0 Hz, the unexplained in yellow), Tines (a comb of tuning-fork tines on a log-frequency spectrum, each tine rising with the amplitude its resonator rings at, coral for the root note and violet for the chord, with a diamond to drag for pitch and decay), Specimen (four glass microscope slides each holding a captured spectrum, with the output spectrum morphing between them along a draggable rail: ink blue, acid yellow output, pink slides, cyan live input), Loom (the scrolling spectrogram as the warp of a loom with draggable heddles for the playheads: indigo, orange cloth, teal heads), Abacus (tracked partials as beads on wires, x is log frequency and size is amplitude, vermilion rings for frozen ones, teal residual tray).
 - Dark, saturated-accent palettes with at most 3 or 4 colours. Colour should carry meaning
   (input vs. effect, detection vs. timing), not decorate.
 - Monospace labels, small and dim. Big monospace numerals for the value being edited.
@@ -41,6 +41,9 @@ Make plugins that are **visually distinctive and technically serious**. Both hal
 - Every plugin has unit tests for its DSP on synthetic signals (null test at zero amount, the
   effect does what it claims, output stays finite). Run `cargo test --release`.
 - Unique 16-byte `VST3_CLASS_ID` per plugin; display name in `bundler.toml`.
+- Wherever an author, vendor or owner name is needed (`VENDOR`, the `VST3_CLASS_ID` prefix, Cargo
+  metadata, README credits), use **Clowd**, not a personal name. New class IDs start with `Clowd`
+  (e.g. `ClowdLoomPlayhds`).
 
 ## Always install
 

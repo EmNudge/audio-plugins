@@ -203,7 +203,7 @@ impl Default for Kiln {
 }
 
 impl Plugin for Kiln {
-    const NAME: &'static str = "Kiln";
+    const NAME: &'static str = "Kiln Saturator";
     const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
@@ -385,7 +385,7 @@ impl Plugin for Kiln {
 }
 
 impl Vst3Plugin for Kiln {
-    const VST3_CLASS_ID: [u8; 16] = *b"CalvinKilnSatur1";
+    const VST3_CLASS_ID: [u8; 16] = *b"ClowdKilnSatur1_";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx, Vst3SubCategory::Distortion];
 }
 

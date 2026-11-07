@@ -69,7 +69,7 @@ impl Default for Firefly {
 }
 
 impl Plugin for Firefly {
-    const NAME: &'static str = "Firefly";
+    const NAME: &'static str = "Firefly Opto Compressor";
     const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
@@ -160,7 +160,7 @@ impl Plugin for Firefly {
 }
 
 impl Vst3Plugin for Firefly {
-    const VST3_CLASS_ID: [u8; 16] = *b"CalvinFireflyOpt";
+    const VST3_CLASS_ID: [u8; 16] = *b"ClowdFireflyOpt_";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx, Vst3SubCategory::Dynamics];
 }
 

@@ -186,7 +186,7 @@ impl VaultParams {
 }
 
 impl Plugin for Vault {
-    const NAME: &'static str = "Vault";
+    const NAME: &'static str = "Vault Reverb";
     const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
@@ -272,7 +272,7 @@ impl Plugin for Vault {
 }
 
 impl Vst3Plugin for Vault {
-    const VST3_CLASS_ID: [u8; 16] = *b"CalvinVaultRever";
+    const VST3_CLASS_ID: [u8; 16] = *b"ClowdVaultRever_";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx, Vst3SubCategory::Reverb];
 }
 

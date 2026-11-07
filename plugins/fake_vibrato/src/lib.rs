@@ -176,7 +176,7 @@ impl Plugin for FakeVibrato {
 }
 
 impl Vst3Plugin for FakeVibrato {
-    const VST3_CLASS_ID: [u8; 16] = *b"CalvinFakeVibrat";
+    const VST3_CLASS_ID: [u8; 16] = *b"ClowdFakeVibrat_";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
         &[Vst3SubCategory::Fx, Vst3SubCategory::Modulation];
 }

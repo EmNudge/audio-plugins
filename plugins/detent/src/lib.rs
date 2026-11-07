@@ -227,7 +227,7 @@ impl Detent {
 }
 
 impl Plugin for Detent {
-    const NAME: &'static str = "Detent";
+    const NAME: &'static str = "Detent Pitch Corrector";
     const MIDI_INPUT: MidiConfig = MidiConfig::Basic;
     const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
@@ -343,7 +343,7 @@ impl Plugin for Detent {
 }
 
 impl Vst3Plugin for Detent {
-    const VST3_CLASS_ID: [u8; 16] = *b"CalvinDetentTune";
+    const VST3_CLASS_ID: [u8; 16] = *b"ClowdDetentTune_";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx, Vst3SubCategory::PitchShift];
 }
 

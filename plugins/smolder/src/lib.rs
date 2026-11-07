@@ -1,7 +1,7 @@
 use nih_plug::prelude::*;
 use nih_plug_egui::{create_egui_editor, egui, EguiState};
 use std::sync::atomic::Ordering;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 
 pub mod dsp;
 pub mod presets;
@@ -70,9 +70,6 @@ impl BandParams {
 pub struct SmolderParams {
     #[persist = "editor-state"]
     pub editor_state: Arc<EguiState>,
-    /// Name of the last preset loaded, for the editor to show.
-    #[persist = "preset"]
-    pub preset_name: Arc<Mutex<String>>,
 
     #[id = "model"]
     pub model: EnumParam<Model>,
@@ -145,7 +142,6 @@ impl Default for SmolderParams {
     fn default() -> Self {
         Self {
             editor_state: EguiState::from_size(760, 780),
-            preset_name: Arc::new(Mutex::new("Init".into())),
             model: EnumParam::new("Model", Model::Tube),
             drive: FloatParam::new("Drive", 12.0, FloatRange::Linear { min: 0.0, max: 40.0 })
                 .with_smoother(SmoothingStyle::Linear(30.0))
@@ -210,8 +206,8 @@ impl Smolder {
 }
 
 impl Plugin for Smolder {
-    const NAME: &'static str = "Smolder";
-    const VENDOR: &'static str = "calvin";
+    const NAME: &'static str = "Smolder Distortion";
+    const VENDOR: &'static str = "Clowd";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");
@@ -373,7 +369,7 @@ impl Plugin for Smolder {
 }
 
 impl Vst3Plugin for Smolder {
-    const VST3_CLASS_ID: [u8; 16] = *b"CalvinSmolderFx!";
+    const VST3_CLASS_ID: [u8; 16] = *b"ClowdSmolderFx!_";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx, Vst3SubCategory::Distortion];
 }
 
