@@ -1,0 +1,340 @@
+# The groove library. Section/Genre/Sub-genre headers in [brackets], then one groove per line:
+#   Name @bpm ~swing | K steps | S steps | ...
+# Lanes: K kick, S snare, R rim, C clap, H hat, O open hat, L low tom, T high tom, X crash, D ride, P perc.
+# Steps are sixteenths, 16 per bar (up to four bars); spaces are ignored.
+#   X accent   x hit   o ghost   r two hits (32nds)   R three hits   q four hits   . rest
+# ~.667e swings eighths (a shuffle); ~.56 swings sixteenths.
+
+[GROOVES/Rock/Classic]
+Backbeat @110 | K X... .... x.x. .... | S .... X... .... X... | H X.x. x.x. x.x. x.x. | X X... .... .... ....
+Driving Eighths @128 | K X... ..x. x... ..x. | S .... X... .... X... | H X.x. x.x. x.x. x... | O .... .... .... ..x. | X X... .... .... ....
+Ride Groove @104 | K X... ..x. x... ..x. | S .... X... .... X... | H .... .... .... x... | D x.x. x.x. x.x. x.x.
+Syncopated @100 | K X..x ..x. .x.. x... | S .... X..o .o.. X... | H x.x. x.x. x.x. x.x.
+Stadium Stomp @82 | K X... ..x. X... ..x. | S .... X... .... X... | C .... X... .... X... | H x... x... x... x...
+Rock And Turnaround @118 | K X... ..x. x... ..x. X... ..x. x.x. .... | S .... X... .... X... .... X... .... X.x. | H x.x. x.x. x.x. x.x. x.x. x.x. x.x. x.x. | X X... .... .... .... .... .... .... ....
+Open Hat Rock @122 | K X... ..x. x... .... | S .... X... .... X... | H x.x. x.x. x.x. x... | O .... .... .... ..x.
+Garage Rock @136 | K X... X... x.x. X... | S .... X... .... X... | H x.x. x.x. x.x. x.x. | P .... .... .... ..o.
+
+[GROOVES/Rock/Half-Time]
+Half-Time @90 | K X... ..x. .x.. .... | S .... .... X... .... | R .... .... .... ..o. | H x.x. x.x. x.x. x.x.
+Heavy Half-Time @76 | K X..x ..x. .... .x.. | S .... .... X... .... | H x... x... x... x... | X X... .... .... ....
+Half-Time Ghosts @92 | K X... .... ..x. .x.. | S .... ..o. X... o..o | H x.x. x.x. x.x. x.x.
+Slow Burn @66 | K X... .... .... ..x. | S .... .... X... .... | D x... x... x... x...
+Half-Time Two Bars @84 | K X... ..x. .... .x.. X... ..x. ..x. .... | S .... .... X... .... .... .... X... ..o. | H x.x. x.x. x.x. x.x. x.x. x.x. x.x. x.x.
+
+[GROOVES/Rock/Punk]
+Punk Eighths @176 | K X.x. x.x. x.x. x.x. | S .... X... .... X... | H x.x. x.x. x.x. x.x. | X X... .... .... ....
+D-Beat @180 | K X.x. .xX. X.x. .x.. | S .... X... .... X... | H x.x. x.x. x.x. x.x.
+Skate Punk @190 | K X... ..x. X... ..x. | S .... X... .... X... | H x.x. x.x. x.x. x.x.
+Pop-Punk Gallop @170 | K X..x ..x. X..x ..x. | S .... X... .... X..o | H x.x. x.x. x.x. x.x.
+Hardcore @200 | K X.x. X.x. X.x. X.xx | S .... X... .... X... | H x.x. x.x. x.x. x.x.
+
+[GROOVES/Rock/Metal]
+Double Kick @160 | K XxXx XxXx XxXx XxXx | S .... X... .... X... | H x.x. x.x. x.x. x.x. | X X... .... .... ....
+Gallop @150 | K X.xx X.xx X.xx X.xx | S .... X... .... X... | D x.x. x.x. x.x. x.x.
+Blast Beat @190 | K x.x. x.x. x.x. x.x. | S .x.x .x.x .x.x .x.x | H xxxx xxxx xxxx xxxx
+Hammer Blast @200 | K xxxx xxxx xxxx xxxx | S xxxx xxxx xxxx xxxx | X X... .... .... ....
+Slow Doom @64 | K X... .... .... .... | S .... .... X... .... | D x... .... x... .... | X X... .... .... ....
+Breakdown Chug @100 | K X.xx .x.x X.xx .x.. | S .... .... X... .... | X X... .... .... ....
+Thrash @186 | K X.x. X.x. X.xx X.x. | S .... X... .... X... | H x.x. x.x. x.x. x.x.
+Groove Metal @108 | K X..x ..x. .x.. X.xx | S .... X... .... X... | D x.x. x.x. x.x. x.x.
+
+[GROOVES/Pop/Radio]
+Straight Pop @118 | K X... .... x..x .... | S .... X... .... X... | C .... x... .... x... | H x.x. x.x. x.x. x.x.
+Ballad @76 | K X... .... ..x. .... | S .... .... X... .... | R .... .... .... ..o. | H x.o. x.o. x.o. x.o.
+Dance Pop @124 | K X... X... X... X... | C .... X... .... X... | H x.x. x.x. x.x. x.x. | O ..x. ..x. ..x. ..x. | X X... .... .... ....
+Synth Pop @112 | K X... .... X... .... | S .... X... .... X... | C .... X... .... X... | H .x.x .x.x .x.x .x.x
+Indie Bounce @126 | K X... ..x. ..x. .... | S .... X... .... X... | H x.x. x.x. x.x. x.x. | P ..x. .... ..x. ....
+Motown @112 | K X... ..x. X... .... | S .... X... .... X... | P xxxx xxxx xxxx xxxx
+Bubblegum @132 | K X... X... X... X... | S .... X... .... X... | H x.x. x.x. x.x. x.x. | P .... ..x. .... ..x.
+Pop Ballad Rim @70 | K X... .... .... ..x. | R .... .... X... .... | H x... x... x... x... | P ..o. ..o. ..o. ..o.
+
+[GROOVES/Funk & Soul/Funk]
+Drummer's Ghosts @100 ~.54 | K X... ..x. .xx. .... | S .o.o X..o .o.. X.o. | H xoxo xoxo xoxo xoxo
+Boogie @108 | K X... ..x. ..x. .... | S .... X... .... X... | H X.x. X.x. X.x. X.x.
+Sixteenth Funk @98 ~.58 | K X..x ..x. .x.. x... | S .o.. X..o .o.o X..o | H XoxX oxoX oxoX oxox
+Go-Go @100 ~.52 | K X..x ..x. X..x ..x. | S .... X... .... X... | H x.x. x.x. x.x. x.x. | L .... ..x. .... ..x. | T .... .... .x.. .... | P x..x ..x. ..x. x...
+Slap Funk @108 ~.55 | K X..x ..x. .x.x ..x. | S .... X..o .o.. X.o. | H xoxo xoxo xoxo xoxo
+Chicken Scratch @112 | K X... ..x. ..x. ...x | S ..o. X..o ..o. X... | H x.x. x.x. x.x. x.x. | O .... .... ...x ....
+Second Line @108 | K X..x ..x. ..x. .x.. | S .... X... ..o. X..o | R x..x ..x. ..x. ..x.
+Tight Pocket @96 ~.56 | K X... ..x. .X.. ..x. | S .... X... .o.. X..o | H x.xx x.x. x.xx x.x.
+Afro-Funk @112 | K X..x ..x. X..x .x.. | S .... X... .... X... | R ..x. .x.. ..x. .x.. | H x.x. x.x. x.x. x.x.
+Funk Rock Hybrid @104 | K X... ..x. x.x. ..x. | S .... X... ..o. X... | H x.x. x.x. x.x. x.x. | O .... .... .... ...x
+
+[GROOVES/Funk & Soul/Soul]
+Slow Soul @70 ~.58 | K X... .... ..x. .... | S .... X... .... X... | H x.x. x.x. x.x. x.x.
+Northern Soul @126 | K X... X... X... X... | S .... X... .... X... | P x.x. x.x. x.x. x.x.
+Neo-Soul Laid-Back @82 ~.6 | K X... ..x. ..x. .x.. | S .... X... .... X..o | H x.o. x.o. x.o. x.o.
+Gospel Chops @96 ~.58 | K X... .... X..x .... | S .... X... .... X..o | H x.x. x.x. x.x. x.x. | P .... .... .... ..x.
+R&B Slow Jam @64 ~.56 | K X... .... ..x. ..x. | S .... .... X... .... | C .... .... X... .... | H x.xx x.xx x.xx x.xx
+
+[GROOVES/Disco & Boogie]
+Four Floor @118 | K X... X... X... X... | S .... X... .... X... | C .... X... .... X... | H x... x... x... x... | O ..x. ..x. ..x. ..x.
+Sixteenth Hats @120 | K X... X... X... X... | S .... X... .... X... | H xo.o xo.o xo.o xo.o | O ..x. ..x. ..x. ..x.
+Philly @120 | K X... X... X... X... | S .... X... .... X... | C .... x... .... x... | H xo.o xo.o xo.o xo.o | O ..x. ..x. ..x. ..x.
+Nu-Disco @122 | K X... X... X... X... | C .... X... .... X... | H .x.x .x.x .x.x .x.x | P ..x. ..x. ..x. ...x
+Italo @124 | K X... X... X... X... | S .... X... .... X... | H x.x. x.x. x.x. x.x. | T .... .... .... xxX.
+Boogie Funk @110 | K X... ..x. X... ..x. | S .... X... .... X... | H x.x. x.x. x.x. x.x. | P ..x. .x.. ..x. .x..
+
+[GROOVES/House/Classic]
+Classic House @124 | K X... X... X... X... | C .... X... .... X... | H .o.o .o.o .o.o .o.o | O ..x. ..x. ..x. ..x.
+Piano House @122 | K X... X... X... X... | C .... X... .... X... | H x... x... x... x... | O ..x. ..x. ..x. ..x.
+Chicago Jack @124 | K X... X... X... X... | S .... X... .... X... | H x.x. x.x. x.x. x.x. | P ..x. .... ..x. ....
+Garage House @125 | K X... X... X... X... | C .... X... .... X..o | H x.xx x.xx x.xx x.xx | O ..x. .... ..x. ....
+Acid House @122 | K X... X... X... X... | C .... X... .... X... | H x.x. x.x. x.x. x.x. | O .... ..x. .... ..x. | P .x.. ...x .x.. ...x
+
+[GROOVES/House/Deep]
+Deep House @120 ~.54 | K X... X... X... X... | R .... o... .... o... | C .... X... .... X... | H o.xo o.xo o.xo o.xo | P ..o. ..o. .o.. ..o.
+Minimal Deep @118 | K X... X... X... X... | R .... o... .... o... | H x.o. x.o. x.o. x.o. | P ...o ..o. ...o ..o.
+Late Night @116 ~.56 | K X... X... X... X... | C .... x... .... x... | H .x.x .x.x .x.x .x.x | P ..o. ..o. ..o. ..o.
+Dusty Loop @110 ~.58 | K X... X... X... X... | S .... x... .... x... | H x.xo x.xo x.xo x.xo
+
+[GROOVES/House/Tech House]
+Tech House @126 | K X... X... X... X... | C .... x... .... x... | H xoxo xoxo xoxo xoxo | O ..X. ..X. ..X. ..X. | P ..x. .x.. ..x. x...
+Percussive Tech @127 | K X... X... X... X... | C .... x... .... x... | H x.xo x.xo x.xo x.xo | O ..x. ..x. ..x. ..x. | P .x.x ..x. .x.. ..xx | L .... .... .... ..o.
+Rolling Tech @128 | K X... X... X... X... | C .... x... .... x... | H x.x. x.x. x.x. x.x. | O ..x. ..x. ..x. ..x. | R x..x ..x. x..x ..x.
+
+[GROOVES/House/UK Garage]
+2-Step @130 ~.56 | K X... .... ..x. .x.. | S .... X... .... X..o | H x.x. x.x. x.x. x.x.
+Speed Garage @132 ~.56 | K X... X... X... X... | S .... X... .... X..o | H x.xx x.xx x.xx x.xx
+Skippy 2-Step @132 ~.58 | K X... .... ..x. ..x. | S .... X... .... X... | H x.x. x.x. x.x. x.x. | O .... .... .... ..x.
+Bassline @136 ~.54 | K X... X... X... X... | S .... X... .... X... | H xoxo xoxo xoxo xoxo
+Future Garage @130 ~.58 | K X... .... ..x. .... | S .... X... .... X... | H x.x. .xx. x.x. .xx. | R ...o ..o. ...o ..o.
+
+[GROOVES/House/Afro House]
+Afro House @122 | K X... X... X... X... | C .... x... .... x... | H x.x. x.x. x.x. x.x. | P x..x ..x. x..x ..x. | L ..x. .... ..x. ..x.
+Tribal House @126 | K X... X... X... X... | C .... x... .... x... | H xoxo xoxo xoxo xoxo | P x.xx .x.x x.xx .x.x | L .... .... ..x. ....
+Amapiano Log Drum @112 ~.52 | K X... .... X... ..x. | S .... .... X... .... | H x.xx x.xx x.xx x.xx | P ..x. ..x. ..x. ..xx
+
+[GROOVES/Techno/Driving]
+Driving @132 | K X... X... X... X... | C .... x... .... x... | H o.o. o.o. o.o. o.o. | O ..x. ..x. ..x. ..x. | P ...x ..x. .... ...x
+Peak Time @140 | K X... X... X... X... | C .... x... .... x... | H o.o. o.o. o.o. o.o. | O ..x. ..x. ..x. ..x. | P x... .x.. ..x. ...x
+Hardgroove @132 | K X... X... X... X... | C .... x... .... x... | H xoxo xoxo xoxo xoxo | O ..x. ..x. ..x. ..x. | P ...x x... ..x. .x..
+Berlin Rumble @135 | K X..X X..X X..X X..X | C .... x... .... x... | H x.x. x.x. x.x. x.x. | O ..x. ..x. ..x. ..x.
+Detroit @130 | K X... X... X... X... | S .... x... .... x... | H x.xo x.xo x.xo x.xo | O ..x. ..x. ..x. ..x. | P ..x. .x.. ..x. ...x
+
+[GROOVES/Techno/Minimal]
+Minimal @126 | K X... X... X... X... | R ..o. .... ...o .... | H x.x. ..x. x.x. ..x.
+Clicks And Cuts @124 | K X... X... X... X... | R ..o. ...o .o.. ..o. | H .o.o ..o. .o.o o... | P .... ..o. .... ..o.
+Dub Techno @122 | K X... X... X... X... | C .... .... x... .... | H ..x. ..x. ..x. ..x. | P ...o ..o. ...o ....
+Stripped Back @128 | K X... X... X... X... | H ..x. ..x. ..x. ..x.
+
+[GROOVES/Techno/Hard]
+Industrial @140 | K X... X.x. X... X.x. | S .... X... .... X... | H xxxx xxxx xxxx xxxx | X X... .... .... .... | P ..x. .... ..x. ....
+Hard Techno @150 | K X... X... X... X... | R xxxx xxxx xxxx xxxx | C .... x... .... x... | O ..x. ..x. ..x. ..x. | X X... .... .... ....
+Acid Techno @138 | K X... X... X... X... | C .... x... .... x... | H x.x. x.x. x.x. x.x. | O ..x. ..x. ..x. ..x. | P .x.. ...x .x.. ..x.
+EBM @120 | K X... .... X.x. .... | S .... X... .... X... | H x.x. x.x. x.x. x.x. | P ..x. ..x. ..x. ..x.
+Rave Stabs @160 | K X... X... X... X... | S .... X... .... X... | H xxxx xxxx xxxx xxxx | O ..x. ..x. ..x. ..x.
+
+[GROOVES/Breaks/Breakbeat]
+Breakbeat @130 | K X.x. ..x. .x.. ..x. | S .... X..o .o.. X.o. | H x.x. x.x. x.x. x.x.
+Funky Breaks @126 | K X... ..x. .xx. ..x. | S .... X..o .o.. X..o | H x.x. x.x. x.x. x.x. | O .... .... .... ..x.
+Big Beat @122 | K X... ..x. .x.. ..x. | S .... X... .... X... | C .... .... .... X... | H x.x. x.x. x.x. x.x. | X X... .... .... ....
+Nu-Skool Breaks @132 | K X..x ..x. ..x. x... | S .... X... .o.. X..o | H xoxo xoxo xoxo xoxo
+Old-School Hip-Hop Break @98 | K X.x. ..x. .xx. ..x. | S .... X... .... X..o | H x.x. x.x. x.x. x.x.
+Twisted Break @136 | K X..x ..x. .x.x ..x. | S .... X..o .o.. X.o. | H x.x. x.x. x.x. x.x. | R .... ...o .... ..o.
+
+[GROOVES/Breaks/Electro]
+Electro @124 | K X... ..x. .X.. ..x. | S .... X... .... X... | C .... X... .... X... | H x.x. x.x. x.x. x.x. | P ..x. .... ..x. ....
+Detroit Electro @128 | K X..x ..x. X..x ..x. | C .... X... .... X... | H xoxo xoxo xoxo xoxo | P .x.. ..x. .x.. ..x.
+Miami Bass @100 | K X.x. ..x. X.x. ..x. | S .... X... .... X... | C .... X... .... X... | H x.x. x.x. x.x. x.x.
+Electro Funk @110 | K X... ..x. ..x. .x.. | S .... X... .... X... | H x.xx x.xx x.xx x.xx
+Freestyle @116 | K X..x ..x. X..x ..x. | S .... X... .... X... | C .... X... .... X... | P x.x. x.x. x.x. x.x.
+
+[GROOVES/Hip-Hop/Boom Bap]
+Boom Bap @90 ~.56 | K X... ..x. .x.. ..x. | S .... X... .... X... | H x.x. x.x. x.x. x.x.
+NY Boom Bap @92 ~.54 | K X... ..x. .x.. .... | S .... X... .... X..o | H x.x. x.x. x.x. x.x. | O .... .... .... ..x.
+East Coast Two Bars @90 ~.56 | K X... ..x. .x.. .... X... ..x. ..x. ..x. | S .... X... .... X... .... X... .... X... | H x.x. x.x. x.x. x.x. x.x. x.x. x.x. x.x.
+Golden Era @94 ~.55 | K X..x ..x. .x.. ..x. | S .... X... ..o. X... | H x.x. x.x. x.x. x.x.
+Dirty South @80 ~.55 | K X... ..x. ..x. x... | S .... X... .... X... | C .... x... .... x... | H x.x. x.x. x.x. x.x.
+Memphis @70 | K X... ..x. .... ..x. | S .... .... X... .... | H x.x. x.x. x.x. x.x. | P .... ..x. .... ...x
+
+[GROOVES/Hip-Hop/Dilla]
+Dilla Swing @85 ~.64 | K X... ..x. ..x. .x.. | S .... X... .... X..o | H x.x. x.x. x.x. x.x.
+Drunk Swing @80 ~.68 | K X... ...x ..x. .... | S .... X... .... X... | H x.x. x.x. x.x. x.x. | R .... .... ..o. ....
+Neo-Soul Hop @88 ~.62 | K X... ..x. ..x. ...x | S .... X... .... X..o | H x.xo x.xo x.xo x.xo
+MPC Shuffle @90 ~.6 | K X... ..x. .x.. ..x. | S .... X... .... X... | H xoxo xoxo xoxo xoxo | C .... .... .... ..o.
+
+[GROOVES/Hip-Hop/Lo-Fi]
+Lo-Fi Chill @78 ~.58 | K X... .... ..x. .x.. | S .... X... .... X... | R .... .... .o.. .... | H x.o. x.o. x.o. x.o.
+Study Beats @72 ~.6 | K X... .... ..x. .... | S .... X... .... X... | H x.x. x.x. x.x. x.x. | P ..o. .... ...o ....
+Rainy Day @68 ~.62 | K X... ...x ..x. .... | S .... X... .... X... | H x.o. x.o. x.o. xoo.
+Tape Wobble @82 ~.64 | K X... ..x. .x.. .... | S .... X... .... X... | H x.x. x.x. x.x. x.x. | O .... .... .... ..x.
+
+[GROOVES/Hip-Hop/West Coast]
+West Coast @95 ~.52 | K X... ..x. ...x ..x. | S .... X... .... X... | C .... X... .... X... | H x.x. x.x. x.x. x.x.
+G-Funk @92 ~.54 | K X..x ..x. ..x. .... | S .... X... .... X... | H x.x. x.x. x.x. x.x. | O .... .... ..x. ....
+Bounce @100 | K X... ..x. X... ..x. | C .... X... .... X... | H x.x. x.x. x.x. x.x.
+
+[GROOVES/Trap/Trap]
+Trap @140 | K X..x ..x. .... .x.. | C .... .... X... .... | H x.x. x.xr x.x. R.xr
+Hat Rolls @145 | K X... ..x. ..x. .... | C .... .... X... .... | H xxrx xxRx xxrx rxRr
+Atlanta @140 | K X..x ...x ..x. .... | S .... .... X... .... | H x.x. x.xr x.x. x.xR | O .... .... .... ..x.
+Melodic Trap @130 | K X... ..x. ..x. .x.. | S .... .... X... .... | H x.x. x.x. x.xr x.x.
+Rage @150 | K X.x. ..x. X.x. ..xx | S .... .... X... .... | H xxxx xxrx xxxx xRrr
+Half-Time Trap @70 | K X... .... ..x. .... | C .... .... X... .... | H x.x. x.x. x.xr x.x.
+Triplet Flow @142 | K X... ..x. .... .x.. | C .... .... X... .... | H RRRR RRRR RRRR RRRR
+
+[GROOVES/Trap/Drill]
+Drill @142 | K X... ..x. ...x .... | S .... .... X... .... | H x.x. x.xr x.x. x.r.
+UK Drill @140 | K X... ..x. ...x ..x. | S .... .... X... .... | H x.x. x.xr x.x. x.r. | P ..o. .... ..o. ....
+Slide Drill @144 | K X... ...x ..x. .... | S .... .... X... .... | H x.xr x.x. x.xr x.x. | O .... .... .... ..x.
+
+[GROOVES/Trap/Phonk]
+Phonk @130 | K X..x ..x. ..x. .... | C .... .... X... .... | H x.x. x.x. x.x. x.xr | P x..x ..x. ..x. ....
+Memphis Phonk @120 | K X... ..x. ..x. .x.. | S .... .... X... .... | H x.x. x.x. x.x. x.x. | P ..x. ..x. .... ..x.
+Drift @140 | K X..x ..x. X..x ..x. | C .... .... X... .... | H xxrx xxrx xxrx xxRr | P x... ..x. x... ..x.
+
+[GROOVES/Drum & Bass/Two-Step]
+Two-Step @174 | K X... .... ..x. .... | S .... X... .... X... | H x.x. x.x. x.x. x.x.
+Dancefloor @174 | K X... .... ..x. ..x. | S .... X... .... X... | H x.x. x.x. x.x. x.xo
+Rollers @172 | K X... .... ..x. ...x | S .... X... .... X... | H xoxo xoxo xoxo xoxo
+Jump-Up @176 | K X... .... ..x. .x.. | S .... X... .... X..o | H x.x. x.x. x.x. x.x. | O .... .... .... ..x.
+
+[GROOVES/Drum & Bass/Liquid]
+Liquid Roll @172 | K X... ...x ..x. .... | S .... X... .... X..o | H x.xx x.xx x.xx x.xx
+Soulful Liquid @170 ~.52 | K X... ..x. ..x. .... | S .... X... ..o. X... | H x.x. x.xo x.x. x.xo
+Atmospheric @168 | K X... .... ..x. .... | S .... X... .... X... | D x.x. x.x. x.x. x.x. | P ...o .... ...o ....
+
+[GROOVES/Drum & Bass/Neurofunk]
+Neurofunk @174 | K X... .... ..x. ..x. | S .... X... .... X... | H xxxx xxxx xxxx xxxx | O ..x. .... ..x. ....
+Techstep @174 | K X... ..x. .... ..x. | S .... X... .... X..o | H x.x. x.x. x.x. x.x. | R .... .... ...o ....
+Darkstep @176 | K X..x .... X... ..x. | S .... X... .... X... | H xoxo xoxo xoxo xoxo
+Neuro Two Bars @174 | K X... .... ..x. ..x. X... .... ..x. .x.. | S .... X... .... X... .... X... .... X..o | H x.x. x.x. x.x. x.x. x.x. x.x. x.x. x.xx
+
+[GROOVES/Drum & Bass/Amen & Jungle]
+Break Chop @170 ~.52 | K X.x. .... ..x. .... | S .... X..o .o.. X.o. | D x.x. x.x. x.x. x.x.
+Jungle @165 | K X.x. .... ..xx .... | S .... X..o .o.. X.o. | H x.x. x.x. x.x. x.x.
+Ragga Jungle @160 | K X... ..x. .x.. ..x. | S .... X... ..o. X..o | H x.x. x.x. x.x. x.x. | P .x.. ...x .x.. ..x.
+Old-School Jungle @162 | K X.x. ..x. .x.x ..x. | S .... X..o o..o X.o. | H x.x. x.x. x.x. x.x.
+Think Break Two Bars @170 | K X.x. .... ..x. .... X.x. .... ..xx .... | S .... X..o .o.. X.o. .... X..o .o.. X.ro | D x.x. x.x. x.x. x.x. x.x. x.x. x.x. x.x.
+Halftime DnB @87 | K X... .... ..x. .... | S .... .... X... .... | H xxxx xxxx xxxx xxxx
+
+[GROOVES/Breakcore & IDM/Hyper]
+Hyper Roll @170 | K X..x ..x. .x.. x.x. | S .... X..r .rR. X.rq | H xxxx xxxx xxxx xxxx
+Snare Storm @180 | K X... ..x. X... ..x. | S ..r. X.rr ..r. XqqR | H x.x. x.x. x.x. x.x.
+Glitch Cascade @175 | K X.x. .x.. X..x ..xr | S .... X.r. .rR. XrqR | H xxrx xxrx xxrx xxRq
+Syncopated Fury @190 | K X..x .x.x ..x. x.xx | S ..r. X..r .rR. X.qr | H x.xx x.xx x.xx x.xr
+Acid Breaks @172 | K X.x. ..x. .x.. .x.x | S .... X..o .rR. X.rq | H xxxx xxxx xxxx xxxx | O ..x. .... .x.. ....
+Machine Gun @168 | K X... X... X... X... | S .... X... rrrr XrRq | H xxxx xxxx xxxx xxxx
+Chopped Amen Madness @178 | K X.x. ..x. rx.x .rx. | S .... X.rr .o.R X.rq | D x.x. xrx. x.xr x.xr
+Stutter Step @186 | K XxXx .... XxXx ..r. | S .... X... ..r. XrRq | H x.x. x.x. x.x. x.x.
+Ratchet Rain @200 | K X... .... X.x. .... | S ..r. ..r. ..r. XrRq | H qqqq qqqq qqqq qqqq
+Warp Tempo @160 | K X..x ..x. X.x. ..xx | S .... X.r. .... XRr. | H xxrx xxRx xxrx xxqr | P ..x. x... ..x. x...
+
+[GROOVES/Breakcore & IDM/Polymetric]
+Three Against Four @150 | K X..X ..X. .X.. X..X ..X. .X.. X..X ..X. .X.. X..X ..X. .X.. | S .... X... .... X... .... X... .... X... .... X... .... X... | H x.x. x.x. x.x. x.x. x.x. x.x. x.x. x.x. x.x. x.x. x.x. x.x.
+Three-Three-Four @160 | K X..x ..x. .x.. x... | S .... X... .... X... | H xxxx xxxx xxxx xxxx
+Skip Seven @140 | K X.x. x..x .x.x ..x. | S .... X... .... X... | H xxxx xxxx xxxx xxxx
+Broken Clock @150 | K X.x. ..x. X..x ..x. | S ..x. X... ..x. X... | H x.xx .xx. x.xx .xx.
+
+[GROOVES/Breakcore & IDM/Braindance]
+Braindance @145 | K X..x ..x. .x.. x..x | S .... X..o .o.. X.rR | H xoxo xoxo xoxo xorq
+Skittering @155 | K X.x. ...x ..x. .x.. | S ..o. X..r .o.. X.qR | H x.xx x.xx x.xx x.xr | P ..o. .... ..o. ....
+Drill And Bass @165 | K X.x. ..x. .x.. x.x. | S .... X..r .rR. XrqR | H x.x. x.x. x.x. x.x. | O ..x. .... ..x. ....
+Slow Glitch @110 | K X... ..x. ...x .... | S .... X... ..r. X..R | H x.x. x.x. x.x. x.xr | P ..o. ...o .o.. ....
+
+[GROOVES/Dubstep & Bass/Dubstep]
+Halftime Dubstep @140 | K X... .... .... .x.. | S .... .... X... .... | H x.x. x.x. x.x. x.x.
+Brostep @140 | K X... .... ..x. .... | S .... .... X... .... | H x.x. x.x. x.x. x.x. | O .... .... .... ..x. | X X... .... .... ....
+Riddim @140 | K X... .... .... .... | S .... .... X... ..x. | H x.x. x.x. x.x. x.x. | P ..x. .... .... ....
+Deep Dubstep @138 | K X... .... .... ..x. | S .... .... X... .... | H x... x... x... x... | P ..o. .... ..o. ....
+Wobble Step @140 | K X..x .... .... .x.. | S .... .... X... .... | H x.x. x.x. x.xr x.x.
+
+[GROOVES/Dubstep & Bass/Footwork]
+Juke @160 | K X..x ..X. .x.. X..x | C .... .... X... .... | H x.x. x.x. x.x. x.x. | P x... ..x. x... ..x.
+Footwork Triplets @160 | K X..x ..x. .x.. .x.. | C .... .... X... .... | H RRRR RRRR RRRR RRRR | P x.x. .... x.x. ....
+Chicago Footwork @158 | K X.x. ..x. X.x. ..x. | C .... .... X... ..x. | H x.xr x.xr x.xr x.xr
+Bass House @128 | K X... X... X... X... | C .... X... .... X... | H x.x. x.x. x.x. x.x. | O ..x. ..x. ..x. ..x. | P ..x. .x.. ..x. ....
+
+[GROOVES/Latin & World/Reggaeton]
+Dembow @96 | K X... X... X... X... | S ...x ..x. ...x ..x. | H x.x. x.x. x.x. x.x.
+Perreo @92 | K X... X... X... X... | S ...x ..x. ...x ..x. | H x.x. x.x. x.x. x.x. | O .... .... .... ..x. | P ..o. ..o. ..o. ..o.
+Moombahton @108 | K X... X... X... X... | S ...x ..x. ...x ..x. | C .... .... X... .... | H x.xx x.xx x.xx x.xx
+Dancehall Riddim @100 | K X... ..x. X... ..x. | S ...x ..x. ...x ..x. | H x.x. x.x. x.x. x.x.
+
+[GROOVES/Latin & World/Afro & Caribbean]
+Afrobeats @100 ~.54 | K X..x ..x. .... ..x. | S .... X... .... X... | R ...x ..x. ...x ..x. | H x.x. x.x. x.x. x.x.
+Afrobeat Fela @110 | K X... ..x. .x.. ..x. | S .... X... .... X..o | R x..x ..x. ..x. x... | H x.x. x.x. x.x. x.x.
+Soca @150 | K X... X... X... X... | S .... X... .... X..x | H xxxx xxxx xxxx xxxx
+Calypso @120 | K X... ..x. X... ..x. | S .... X... .... X... | P x..x ..x. x..x ..x.
+Highlife @116 | K X... ..x. X... ..x. | R x.x. x.x. x.x. x.x. | H x.x. x.x. x.x. x.x.
+
+[GROOVES/Latin & World/Latin]
+Bossa Nova @120 | K X..x ..x. X..x ..x. | R x..x ..x. ..x. .x.. | H x.x. x.x. x.x. x.x.
+Samba @100 | K X..x X..x X..x X..x | S .... x... .... x... | P x.xx x.xx x.xx x.xx | H xxxx xxxx xxxx xxxx
+Son Clave @100 | K X... .... X... .... | H x.x. x.x. x.x. x.x. | P x..x ..x. ..x. x...
+Rumba Clave @96 | K X... .... X... .... | H x.x. x.x. x.x. x.x. | P x..x ...x ..x. x...
+Cumbia @92 | K X... ..x. X... ..x. | S .... x... .... x... | H x.x. x.x. x.x. x.x. | P x.x. x.x. x.x. x.x.
+Salsa @180 | K ..x. ..x. ..x. ..x. | R x..x ..x. ..x. x... | P x.xx .x.x x.xx .x.x | H x.x. x.x. x.x. x.x.
+Merengue @130 | K X... X... X... X... | S x.xx x.xx x.xx x.xx | P x.x. x.x. x.x. x.x.
+Bachata @128 | K X... X... X... X... | R .... x... .... x... | H x.x. x.x. x.x. x.x. | P ..x. ..x. ..x. ..x.
+Baião @100 | K X... ..x. X... ..x. | S ..x. x... ..x. x... | H x.x. x.x. x.x. x.x.
+
+[GROOVES/Latin & World/Reggae & Dub]
+One Drop @76 ~.58 | K .... .... X... .... | R .... .... X... .... | H x.x. x.x. x.x. x.x.
+Rockers @78 ~.56 | K X... X... X... X... | R .... X... .... X... | H x.x. x.x. x.x. x.x.
+Steppers @80 | K X... X... X... X... | R .... .... X... .... | H x.x. x.x. x.x. x.x. | O ..x. ..x. ..x. ..x.
+Dub Skank @70 ~.58 | K .... .... X... .... | S .... .... X... .... | H ..x. ..x. ..x. ..x. | P ...o .... ...o ....
+Ska @150 | K X... X... X... X... | S .... X... .... X... | H .x.x .x.x .x.x .x.x
+
+[GROOVES/Jazz & Shuffle/Shuffle]
+Blues Shuffle @100 ~.667e | K X... .... X... .... | S .... X... .... X... | D x.x. x.x. x.x. x.x.
+Half-Time Shuffle @92 ~.667e | K X... .... ..x. .... | S .... ..o. X... ..o. | H x.x. x.x. x.x. x.x.
+Texas Shuffle @120 ~.667e | K X... X... X... X... | S .... X... .... X... | H x.x. x.x. x.x. x.x.
+Rock Shuffle @126 ~.667e | K X... ..x. X... ..x. | S .... X... .... X... | H x.x. x.x. x.x. x.x. | X X... .... .... ....
+Funky Shuffle @96 ~.667e | K X... ..x. ..x. .... | S ..o. X... ..o. X..o | H x.x. x.x. x.x. x.x.
+
+[GROOVES/Jazz & Shuffle/Jazz]
+Swing Ride @120 ~.667e | K o... o... o... o... | S .... .... ..o. ...o | H .... x... .... x... | D x... x.x. x... x.x.
+Bebop @180 ~.667e | K o... o... o... o... | S .... ..o. ...o .... | H .... x... .... x... | D x... x.x. x... x.x.
+Medium Swing @132 ~.667e | K o... o... o... o... | S .... .... o... ..o. | H .... x... .... x... | D x... x.x. x... x.x.
+Jazz Brushes @96 ~.667e | K o... .... o... .... | S x.x. x.x. x.x. x.x. | H .... x... .... x...
+
+[FILLS/Snare]
+Snare Build @120 | S .... .... .... oxxX
+Snare Roll Two Beats @120 | S .... .... oooo xxXX
+Snare Eighths @120 | S .... .... x.x. x.x.
+Flam Roll @120 | S .... .... .... rrrR
+Press Roll @120 | S .... .... ..xx xrrR
+Snare Crescendo Bar @120 | S oooo ooxx xxxx xXXX
+Syncopated Snare @120 | S .... .... x.xx .xXx
+Snare Pickup @120 | S .... .... .... ..xX
+
+[FILLS/Toms]
+Tom Run Down @120 | S .... .... .... x... | T .... .... .... .xx. | L .... .... .... ...x
+Tom Cascade @120 | T .... .... xxx. .... | L .... .... ...x xxX.
+Tom Run Two Beats @120 | S .... .... x... .... | T .... .... .xx. .... | L .... .... ...x xxX.
+Tom Triplets @120 | T .... .... .... RR.. | L .... .... .... ..RR
+Floor Tom Thump @120 | L .... .... x.x. xXX.
+Round The Kit @120 | S .... .... x... .... | T .... .... .x.. x... | L .... .... ...x ..XX
+Tom Roll @120 | T .... .... .... rr.. | L .... .... .... ..rR
+
+[FILLS/Kick & Snare]
+Kick Snare Trade @120 | K .... .... .... x.x. | S .... .... .... .x.X
+Double Kick Out @120 | K .... .... .... xxXx | S .... .... .... ..x.
+Backbeat Pickup @120 | K .... .... ..x. ...x | S .... .... .... ..x.
+Snare Kick Stab @120 | S .... .... x.x. .xxX | K .... .... .x.. ....
+Rock Fill @120 | K .... .... x... ..x. | S .... .... .x.x .x.X | T .... .... .... ...x
+
+[FILLS/Breakbeat]
+DnB Roll @174 | S .... .... .... xoxX | K .... .... .... ....
+Jungle Fill @165 | S .... .... o.xo .xoX | K .... .... x... ..x.
+Amen Turnaround @170 | S .... .... x.xo .oXx | K .... .... ..x. ....
+Breaks Stutter @130 | S .... .... xxrx xXrR | K .... .... x... ....
+Hip-Hop Flip @92 | S .... .... ..o. xoX. | K .... .... x... ....
+
+[FILLS/Electronic]
+Trap Roll @140 | H .... .... xxrr RRqq | C .... .... .... ...X
+Build Roll Eighths @128 | S .... .... x.x. x.xX | K .... .... x... x...
+Build Roll Sixteenths @128 | S .... .... xxxx xxxX
+Thirty-Second Roll @140 | S .... .... rrrr rrrR
+Glitch Fill @170 | S .... .... rRqr RqrX | K .... .... x.x. ....
+Snare Drop @128 | S .... .... .... xxxx | X .... .... .... ....
+Four Bar Build @128 | S x... x... x... x... x.x. x.x. x.x. x.x. xxxx xxxx xxxx xxxx rrrr rrrr rrrr rrrR | K x... x... x... x... x... x... x... x... x... x... x... x... .... .... .... ....
+Two Bar Roll @140 | S .... .... .... .... xxxx xxxx rrrr rrrR | K .... .... .... .... x... x... x... ....
+
+[FILLS/Metal]
+Double Kick Fill @160 | K .... .... xxxx xXXx | S .... .... .... ....
+Blast Fill @190 | K .... .... xxxx xxxx | S .... .... .x.x .x.X
+Tom Gallop @150 | K .... .... x.xx x.xx | T .... .... .... x.x. | L .... .... .... ..xX

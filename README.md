@@ -40,6 +40,10 @@ Each plugin has its own crate under `plugins/`.
 - [`abacus`](plugins/abacus): sine-bank resynthesis.
 - [`tines`](plugins/tines): tuned resonator.
 
+**MIDI**
+
+- [`pocket`](plugins/pocket): drum groove sequencer and browser, with drag-to-DAW MIDI clips.
+
 ## Build and install
 
 ```sh
