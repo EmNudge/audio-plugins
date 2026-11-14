@@ -57,3 +57,6 @@ name = "Loom Spectral Playheads"
 
 [abacus]
 name = "Abacus Sine Resynth"
+
+[pocket]
+name = "Pocket Groove Sequencer"

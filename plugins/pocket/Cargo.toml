@@ -1,0 +1,24 @@
+[package]
+name = "pocket"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Drum groove sequencer and browser: a generator, a groove library, MIDI out and drag-to-DAW, drawn as a pegboard with marbles"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+nih_plug = { workspace = true, features = ["assert_process_allocs", "vst3"] }
+nih_plug_egui.workspace = true
+serde = { version = "1", features = ["derive"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+drag = "2.1.1"
+raw-window-handle = "0.6"
+objc2 = "0.6"
+objc2-app-kit = { version = "0.3", features = ["std", "NSApplication", "NSEvent", "NSWindow", "NSView", "NSResponder"] }
+
+[dev-dependencies]
+serde_json = "1"
+ui_preview = { path = "../../crates/ui_preview" }
