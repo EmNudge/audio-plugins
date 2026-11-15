@@ -60,3 +60,6 @@ name = "Abacus Sine Resynth"
 
 [pocket]
 name = "Pocket Groove Sequencer"
+
+[digger]
+name = "Digger Drum Sampler"

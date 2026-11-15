@@ -28,9 +28,9 @@ fn main() {
     let transport = Transport { host: None, audition: true, tempo: groove.bpm as f64 };
 
     let mut state = ui::UiState::default();
-    if let Ok(path) = std::env::var("POCKET_PATH") {
-        state.browse(&path.split('/').collect::<Vec<_>>());
-    }
+    // e.g. POCKET_TAB=grooves POCKET_GENRE="Hip-Hop"
+    let tab = std::env::var("POCKET_TAB").unwrap_or_else(|_| "grooves".into());
+    state.browse(&tab, std::env::var("POCKET_GENRE").ok().as_deref());
     let draw_params = params.clone();
     ui_preview::Shot {
         size: (1080, 748),
