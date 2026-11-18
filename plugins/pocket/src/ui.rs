@@ -109,6 +109,8 @@ pub struct UiState {
     readout_time: f64,
     toast: (String, f64),
     pub hint: &'static str,
+    /// Start the groove playing when one is picked in the browser, if nothing is running.
+    pub auto_preview: bool,
 }
 
 impl Default for UiState {
@@ -130,14 +132,22 @@ impl Default for UiState {
             readout_time: -10.0,
             toast: (String::new(), -10.0),
             hint: "",
+            auto_preview: true,
         }
     }
 }
 
 impl UiState {
-    /// Open the browser at a folder, e.g. `["GROOVES", "Rock"]`.
-    pub fn browse(&mut self, path: &[&str]) {
-        self.browser.path = path.iter().map(|s| s.to_string()).collect();
+    /// Open the browser on a tab ("grooves", "fills", "my midi") filtered to a genre.
+    pub fn browse(&mut self, tab: &str, genre: Option<&str>) {
+        use crate::browser::Tab;
+        self.browser.tab = match tab {
+            "fills" => Tab::Fills,
+            "my midi" => Tab::MyMidi,
+            _ => Tab::Grooves,
+        };
+        self.browser.genre = genre.map(str::to_owned);
+        self.browser.sub = None;
     }
 
     /// The pattern as it stands counts as untouched: a load or a roll, not a hand edit.

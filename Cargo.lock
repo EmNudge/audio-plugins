@@ -786,6 +786,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "digger"
+version = "0.1.0"
+dependencies = [
+ "nih_plug",
+ "nih_plug_egui",
+ "serde",
+ "serde_json",
+ "ui_preview",
+]
+
+[[package]]
 name = "dispatch"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

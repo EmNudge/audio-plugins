@@ -28,8 +28,20 @@ pub struct UserLib {
     pub scanning: bool,
 }
 
+/// The three places to browse. Grooves and fills are one flat, scrolling list each, filtered by
+/// genre; My MIDI follows the folders the user added.
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
+pub enum Tab {
+    #[default]
+    Grooves,
+    Fills,
+    MyMidi,
+}
+
 #[derive(Clone, PartialEq, Debug)]
 pub enum Entry {
+    /// A label in the flat list where the genre changes.
+    Header(String),
     Folder { name: String, count: usize, root: Option<usize> },
     Builtin(usize),
     File { path: PathBuf, place: String },
@@ -40,6 +52,13 @@ type Thumb = [[u8; 16]; LANES];
 
 #[derive(Default)]
 pub struct Browser {
+    pub tab: Tab,
+    /// The genre filter on the grooves and fills tabs; `None` is all of them.
+    pub genre: Option<String>,
+    /// A sub-genre within the chosen genre, picked from the tag chips that appear under it. These
+    /// exist so the list can be narrowed with the mouse alone, for hosts that keep the keyboard.
+    pub sub: Option<String>,
+    /// Where the user is inside My MIDI.
     pub path: Vec<String>,
     pub search: String,
     user: Arc<Mutex<UserLib>>,
@@ -48,7 +67,7 @@ pub struct Browser {
     dialog_result: Arc<Mutex<Option<String>>>,
     dialog_open: Arc<AtomicBool>,
     entries: Vec<Entry>,
-    key: Option<(Vec<String>, String, u32)>,
+    key: Option<(Tab, Option<String>, Option<String>, Vec<String>, String, u32)>,
     thumbs: HashMap<PathBuf, Option<Box<Thumb>>>,
 }
 
@@ -61,11 +80,31 @@ fn matches(haystack: &str, query: &str) -> bool {
     query.split_whitespace().all(|word| h.contains(word))
 }
 
-/// What to list for a place in the folder tree, or for a search.
-pub fn build(path: &[String], search: &str, user: &UserLib) -> Vec<Entry> {
+/// The genres of a section, in library order.
+pub fn genres(tab: Tab) -> Vec<String> {
+    let section = match tab {
+        Tab::Grooves => "GROOVES",
+        Tab::Fills => "FILLS",
+        Tab::MyMidi => return Vec::new(),
+    };
+    grooves::tree().find(&[section.into()]).map(|f| f.folders.iter().map(|g| g.name.clone()).collect()).unwrap_or_default()
+}
+
+/// The sub-genres inside a genre, in library order. Empty where a genre has none (the fills).
+pub fn sub_genres(tab: Tab, genre: &str) -> Vec<String> {
+    let section = match tab {
+        Tab::Grooves => "GROOVES",
+        Tab::Fills => "FILLS",
+        Tab::MyMidi => return Vec::new(),
+    };
+    grooves::tree().find(&[section.into(), genre.into()]).map(|g| g.folders.iter().map(|f| f.name.clone()).collect()).unwrap_or_default()
+}
+
+/// What to list: a flat run of grooves or fills (with a label where the genre changes when all of
+/// them are showing), the user's folders, or the results of a search across everything.
+pub fn build(tab: Tab, genre: Option<&str>, sub: Option<&str>, path: &[String], search: &str, user: &UserLib) -> Vec<Entry> {
     let query = search.trim().to_lowercase();
     let lib = library();
-    let user_count: usize = user.roots.iter().map(Dir::count).sum();
     if !query.is_empty() {
         let mut out = Vec::new();
         for (i, g) in lib.iter().enumerate() {
@@ -86,18 +125,28 @@ pub fn build(path: &[String], search: &str, user: &UserLib) -> Vec<Entry> {
         out.truncate(MAX_RESULTS);
         return out;
     }
-    let Some(section) = path.first() else {
-        let tree = grooves::tree();
-        let mut out: Vec<Entry> = tree.folders.iter().map(|f| Entry::Folder { name: f.name.clone(), count: f.count(), root: None }).collect();
-        out.push(Entry::Folder { name: USER_ROOT.into(), count: user_count, root: None });
-        return out;
+    let section = match tab {
+        Tab::MyMidi => return build_user(path, user),
+        Tab::Grooves => "GROOVES",
+        Tab::Fills => "FILLS",
     };
-    if section == USER_ROOT {
-        return build_user(&path[1..], user);
+    let Some(root) = grooves::tree().find(&[section.into()]) else { return Vec::new() };
+    let mut out = Vec::new();
+    for g in root.folders.iter().filter(|g| genre.is_none_or(|want| g.name == want)) {
+        if genre.is_none() {
+            out.push(Entry::Header(g.name.clone()));
+        }
+        let mut items = Vec::new();
+        match sub.filter(|_| genre.is_some()) {
+            Some(want) => {
+                if let Some(f) = g.folders.iter().find(|f| f.name == want) {
+                    f.all_items(&mut items);
+                }
+            }
+            None => g.all_items(&mut items),
+        }
+        out.extend(items.into_iter().map(Entry::Builtin));
     }
-    let Some(folder) = grooves::tree().find(path) else { return Vec::new() };
-    let mut out: Vec<Entry> = folder.folders.iter().map(|f| Entry::Folder { name: f.name.clone(), count: f.count(), root: None }).collect();
-    out.extend(folder.items.iter().map(|&i| Entry::Builtin(i)));
     out
 }
 
@@ -151,6 +200,22 @@ pub fn pick_folder(result: &Arc<Mutex<Option<String>>>, open: &Arc<AtomicBool>, 
     let _ = (result, open, prompt);
 }
 
+/// A genre's name as it fits on a filter chip.
+fn short_genre(name: &str) -> String {
+    match name {
+        "Drum & Bass" => "DNB".into(),
+        "Breakcore & IDM" => "IDM".into(),
+        "Funk & Soul" => "FUNK".into(),
+        "Disco & Boogie" => "DISCO".into(),
+        "Dubstep & Bass" => "DUBSTEP".into(),
+        "Latin & World" => "LATIN".into(),
+        "Jazz & Shuffle" => "JAZZ".into(),
+        "Breakbeat" | "Breaks" => "BREAKS".into(),
+        "Kick & Snare" => "KICK+SN".into(),
+        other => other.to_uppercase().chars().take(8).collect(),
+    }
+}
+
 fn folder_glyph(painter: &egui::Painter, at: Pos2, color: Color32) {
     painter.rect_filled(Rect::from_min_size(at + Vec2::new(0.0, 0.0), Vec2::new(8.0, 4.0)), 1.5, color);
     painter.rect_filled(Rect::from_min_size(at + Vec2::new(0.0, 3.0), Vec2::new(18.0, 12.0)), 2.5, color);
@@ -197,55 +262,133 @@ impl Browser {
                     f.push(chosen);
                 }
             }
-            self.path = vec![USER_ROOT.into()];
+            self.tab = Tab::MyMidi;
+            self.path.clear();
         }
 
         let (user_version, scanning) = self.user.lock().map(|u| (u.version, u.scanning)).unwrap_or((0, false));
-        let key = (self.path.clone(), self.search.clone(), user_version);
+        let key = (self.tab, self.genre.clone(), self.sub.clone(), self.path.clone(), self.search.clone(), user_version);
         if self.key.as_ref() != Some(&key) {
             self.entries = match self.user.lock() {
-                Ok(u) => build(&self.path, &self.search, &u),
+                Ok(u) => build(self.tab, self.genre.as_deref(), self.sub.as_deref(), &self.path, &self.search, &u),
                 Err(_) => Vec::new(),
             };
             self.key = Some(key);
         }
 
-        // Title and where we are.
+        // Title, and the preview switch.
         painter.text(inner.left_top() + Vec2::new(0.0, 6.0), Align2::LEFT_CENTER, "BROWSER", FontId::monospace(11.0), rgba(TEXT, 255.0));
         let searching = !self.search.trim().is_empty();
-        let place = if searching { "SEARCH".to_owned() } else if self.path.is_empty() { "ALL".into() } else { self.path.join(" / ").to_uppercase() };
-        let count = self.entries.iter().filter(|e| !matches!(e, Entry::Folder { .. } | Entry::AddFolder)).count();
-        painter.text(inner.right_top() + Vec2::new(0.0, 6.0), Align2::RIGHT_CENTER, if scanning { "SCANNING".to_owned() } else if count > 0 { format!("{count}") } else { String::new() }, FontId::monospace(10.0), TEXT_DIM);
+        let count = self.entries.iter().filter(|e| matches!(e, Entry::Builtin(_) | Entry::File { .. })).count();
+        let auto = Rect::from_min_size(inner.right_top() + Vec2::new(-52.0, -2.0), Vec2::new(52.0, 17.0));
+        let r = text_button(ui, painter, auto, "AUTO", state.auto_preview, TEXT);
+        if r.clicked() {
+            state.auto_preview = !state.auto_preview;
+        }
+        if r.hovered() {
+            state.hint = "PREVIEW: PICKING A GROOVE OR FILL STARTS IT PLAYING ON THE PLUGIN'S OWN CLOCK WHEN YOUR HOST IS STOPPED. THE NOTES GO OUT AS MIDI, SO A SAMPLER AFTER POCKET PLAYS THEM.";
+        }
+        painter.text(inner.right_top() + Vec2::new(-60.0, 6.0), Align2::RIGHT_CENTER, if scanning { "SCANNING".to_owned() } else { format!("{count}") }, FontId::monospace(10.0), TEXT_DIM);
 
-        let back = Rect::from_min_size(inner.left_top() + Vec2::new(0.0, 20.0), Vec2::new(26.0, 22.0));
-        let can_back = !self.path.is_empty() || searching;
-        if can_back {
-            let r = text_button(ui, painter, back, "<", false, TEXT);
-            if r.clicked() {
-                if searching {
-                    self.search.clear();
-                } else {
-                    self.path.pop();
-                }
+        // Tabs.
+        let tab_w = (inner.width() - 2.0 * 4.0) / 3.0;
+        for (i, (tab, label, hint)) in [
+            (Tab::Grooves, "GROOVES", "FULL GROOVES, ONE LONG LIST. FILTER BY GENRE BELOW, OR SEARCH."),
+            (Tab::Fills, "FILLS", "FILLS THAT GO ON THE END OF WHATEVER IS ON THE BOARD."),
+            (Tab::MyMidi, "MY MIDI", "YOUR OWN FOLDERS OF .MID FILES."),
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            let cell = Rect::from_min_size(inner.left_top() + Vec2::new(i as f32 * (tab_w + 4.0), 22.0), Vec2::new(tab_w, 20.0));
+            let r = text_button(ui, painter, cell, label, self.tab == tab && !searching, TEXT);
+            if r.clicked() && self.tab != tab {
+                self.tab = tab;
+                self.genre = None;
+                self.sub = None;
+                self.search.clear();
+            } else if r.clicked() {
+                self.search.clear();
             }
             if r.hovered() {
-                state.hint = "GO UP A FOLDER.";
+                state.hint = hint;
             }
-        } else {
-            painter.rect_stroke(back, 4.0, Stroke::new(1.0_f32, GRID), StrokeKind::Inside);
         }
-        // Long paths show their last two folders.
-        let crumb = if !searching && self.path.len() > 2 {
-            format!(".. / {}", self.path[self.path.len() - 2..].join(" / ").to_uppercase())
+        let mut y = 48.0;
+
+        if self.tab == Tab::MyMidi {
+            // Folders: a way back up, and where you are.
+            let back = Rect::from_min_size(inner.left_top() + Vec2::new(0.0, y), Vec2::new(26.0, 20.0));
+            if !self.path.is_empty() {
+                let r = text_button(ui, painter, back, "<", false, TEXT);
+                if r.clicked() {
+                    self.path.pop();
+                }
+                if r.hovered() {
+                    state.hint = "GO UP A FOLDER.";
+                }
+            } else {
+                painter.rect_stroke(back, 4.0, Stroke::new(1.0_f32, GRID), StrokeKind::Inside);
+            }
+            let place = if self.path.is_empty() { "ALL FOLDERS".to_owned() } else { self.path.join(" / ").to_uppercase() };
+            let crumb = if self.path.len() > 2 { format!(".. / {}", self.path[self.path.len() - 2..].join(" / ").to_uppercase()) } else { place };
+            painter.text(back.right_center() + Vec2::new(8.0, 0.0), Align2::LEFT_CENTER, crumb, FontId::monospace(9.5), TEXT_DIM);
+            y += 26.0;
         } else {
-            place
-        };
-        painter.text(back.right_center() + Vec2::new(8.0, 0.0), Align2::LEFT_CENTER, crumb, FontId::monospace(9.5), TEXT_DIM);
+            // Genre filter: ALL and one chip per genre, five to a row.
+            let names = genres(self.tab);
+            let columns = 5usize;
+            let chip_w = (inner.width() - (columns - 1) as f32 * 3.0) / columns as f32;
+            let labels: Vec<(Option<&String>, String)> = std::iter::once((None, "ALL".to_owned())).chain(names.iter().map(|n| (Some(n), short_genre(n)))).collect();
+            for (i, (name, label)) in labels.iter().enumerate() {
+                let cell = Rect::from_min_size(
+                    inner.left_top() + Vec2::new((i % columns) as f32 * (chip_w + 3.0), y + (i / columns) as f32 * 20.0),
+                    Vec2::new(chip_w, 17.0),
+                );
+                let selected = self.genre.as_ref() == *name;
+                let r = text_button(ui, painter, cell, label, selected && !searching, TEXT);
+                if r.clicked() {
+                    self.genre = name.cloned();
+                    self.sub = None;
+                    self.search.clear();
+                }
+                if r.hovered() {
+                    state.hint = "SHOW ONLY THIS GENRE. SUB-GENRES SUCH AS METAL OR AMEN ARE TAGS: SEARCH FOR THEM.";
+                }
+            }
+            y += labels.len().div_ceil(columns) as f32 * 20.0 + 3.0;
+
+            // Tag chips for the sub-genres of the chosen genre: click one to narrow, again to undo.
+            if let Some(genre) = self.genre.clone() {
+                let subs = sub_genres(self.tab, &genre);
+                let columns = 4usize;
+                let chip_w = (inner.width() - (columns - 1) as f32 * 3.0) / columns as f32;
+                for (i, name) in subs.iter().enumerate() {
+                    let cell = Rect::from_min_size(
+                        inner.left_top() + Vec2::new((i % columns) as f32 * (chip_w + 3.0), y + (i / columns) as f32 * 20.0),
+                        Vec2::new(chip_w, 17.0),
+                    );
+                    let label: String = name.to_uppercase().chars().take(10).collect();
+                    let selected = self.sub.as_ref() == Some(name);
+                    let r = text_button(ui, painter, cell, &label, selected && !searching, SNARE);
+                    if r.clicked() {
+                        self.sub = if selected { None } else { Some(name.clone()) };
+                        self.search.clear();
+                    }
+                    if r.hovered() {
+                        state.hint = "A SUB-GENRE TAG. CLICK TO SHOW ONLY THESE, CLICK AGAIN FOR THE WHOLE GENRE.";
+                    }
+                }
+                if !subs.is_empty() {
+                    y += subs.len().div_ceil(columns) as f32 * 20.0 + 3.0;
+                }
+            }
+        }
 
         // Search.
-        let search = Rect::from_min_size(inner.left_top() + Vec2::new(0.0, 48.0), Vec2::new(inner.width(), 22.0));
+        let search = Rect::from_min_size(inner.left_top() + Vec2::new(0.0, y), Vec2::new(inner.width(), 22.0));
         painter.rect_filled(search, 4.0, BG);
-        painter.rect_stroke(search, 4.0, Stroke::new(1.0_f32, GRID), StrokeKind::Inside);
+        painter.rect_stroke(search, 4.0, Stroke::new(1.0_f32, if searching { rgba(TEXT, 160.0) } else { GRID }), StrokeKind::Inside);
         let edit_rect = search.shrink2(Vec2::new(8.0, 1.0));
         let mut child = ui.new_child(UiBuilder::new().max_rect(edit_rect));
         child.visuals_mut().extreme_bg_color = Color32::TRANSPARENT;
@@ -254,7 +397,7 @@ impl Browser {
         child.visuals_mut().selection.stroke = Stroke::NONE;
         let response = child.add(
             TextEdit::singleline(&mut self.search)
-                .hint_text("search grooves")
+                .hint_text("type to search (if your host allows)")
                 .font(FontId::monospace(10.0))
                 .text_color(rgba(TEXT, 255.0))
                 .frame(false)
@@ -262,10 +405,11 @@ impl Browser {
                 .vertical_align(egui::Align::Center),
         );
         if response.hovered() {
-            state.hint = "TYPE TO SEARCH EVERY GROOVE, FILL AND FILE BY NAME OR FOLDER.";
+            state.hint = "TYPE TO SEARCH EVERY GROOVE, FILL AND FILE AT ONCE: BY NAME, GENRE OR SUB-GENRE (E.G. METAL, AMEN, HYPER, DEEP).";
         }
+        y += 28.0;
 
-        let list = Rect::from_min_max(inner.left_top() + Vec2::new(0.0, 78.0), inner.max);
+        let list = Rect::from_min_max(inner.left_top() + Vec2::new(0.0, y), inner.max);
         let current = params.pattern.name();
         let mut action: Option<Action> = None;
         let lib = library();
@@ -284,6 +428,11 @@ impl Browser {
                 let painter = ui.painter_at(row);
                 let hot = r.hovered();
                 match entry {
+                    Entry::Header(name) => {
+                        let y = row.center().y + 6.0;
+                        painter.text(Pos2::new(row.left() + 4.0, y), Align2::LEFT_CENTER, name.to_uppercase(), FontId::monospace(9.5), rgba(TEXT, 200.0));
+                        painter.line_segment([Pos2::new(row.left() + 4.0, y + 9.0), Pos2::new(row.right() - 4.0, y + 9.0)], Stroke::new(1.0_f32, GRID));
+                    }
                     Entry::Folder { name, count, root } => {
                         painter.rect_filled(row, 5.0, if hot { PANEL_HI } else { BG });
                         folder_glyph(&painter, row.left_center() + Vec2::new(10.0, -8.0), if hot { rgba(TEXT, 230.0) } else { TEXT_DIM });
@@ -327,12 +476,12 @@ impl Browser {
                         let (name, sub, thumb, selected) = match entry {
                             Entry::Builtin(i) => {
                                 let g = &lib[*i];
-                                let sub = if searching {
-                                    format!("{} bpm  {}", g.bpm, g.path.last().map(|s| s.to_lowercase()).unwrap_or_default())
-                                } else if g.kind == Kind::Fill {
-                                    format!("{} bar{}  fill", g.bars(), if g.bars() == 1 { "" } else { "s" })
+                                // The genre and sub-genre ride along as tags on every row.
+                                let tags = g.path[1..].join(" / ").to_lowercase();
+                                let sub = if g.kind == Kind::Fill {
+                                    format!("{} bar{}  {tags}", g.bars(), if g.bars() == 1 { "" } else { "s" })
                                 } else {
-                                    format!("{} bpm  {} bar{}", g.bpm, g.bars(), if g.bars() == 1 { "" } else { "s" })
+                                    format!("{} bpm  {tags}", g.bpm)
                                 };
                                 (g.name.clone(), sub, Some(*g.thumbnail()), current == g.name)
                             }
@@ -354,7 +503,7 @@ impl Browser {
                         }
                         let shown: String = if name.chars().count() > 22 { name.chars().take(21).collect::<String>() + ".." } else { name };
                         painter.text(row.left_top() + Vec2::new(70.0, 12.0), Align2::LEFT_CENTER, shown.to_uppercase(), FontId::monospace(10.0), rgba(TEXT, if selected || hot { 255.0 } else { 215.0 }));
-                        let sub: String = sub.chars().take(30).collect();
+                        let sub: String = sub.chars().take(33).collect();
                         painter.text(row.left_top() + Vec2::new(70.0, 27.0), Align2::LEFT_CENTER, sub, FontId::monospace(8.5), TEXT_DIM);
                         if hot {
                             state.hint = match entry {
@@ -388,33 +537,38 @@ impl Browser {
                     f.retain(|p| p.trim_end_matches('/') != name.trim_end_matches('/'));
                 }
             }
-            Action::Load(i) => match self.entries[i].clone() {
-                Entry::Builtin(g) => {
-                    let g = &library()[g];
-                    g.load(&params.pattern, true);
-                    if g.kind == Kind::Groove {
-                        set_once(setter, &params.swing, g.swing);
-                        set_once(setter, &params.swing_eighths, g.eighths);
-                        note(state, ui, "LOADED", format!("{} bpm", g.bpm));
-                    } else {
-                        note(state, ui, "FILL", g.name.to_uppercase());
-                    }
-                    state.mark_clean(&params.pattern);
+            Action::Load(i) => {
+                if state.auto_preview && meter.playhead.load(Ordering::Relaxed) < 0.0 {
+                    meter.audition.store(true, Ordering::Relaxed);
                 }
-                Entry::File { path, .. } => match import::read_clip(&path) {
-                    Ok(clip) => {
-                        clip.load(&params.pattern, true, &stem(&path));
-                        state.mark_clean(&params.pattern);
-                        let skipped = if clip.skipped > 0 { format!(", {} NOTES NOT DRUMS", clip.skipped) } else { String::new() };
-                        toast(state, ui, format!("LOADED {} - {} BAR{}{}", stem(&path).to_uppercase(), clip.bars, if clip.bars == 1 { "" } else { "S" }, skipped));
-                        if let Some(bpm) = clip.bpm {
-                            note(state, ui, "FILE TEMPO", format!("{bpm:.0} bpm"));
+                match self.entries[i].clone() {
+                    Entry::Builtin(g) => {
+                        let g = &library()[g];
+                        g.load(&params.pattern, true);
+                        if g.kind == Kind::Groove {
+                            set_once(setter, &params.swing, g.swing);
+                            set_once(setter, &params.swing_eighths, g.eighths);
+                            note(state, ui, "LOADED", format!("{} bpm", g.bpm));
+                        } else {
+                            note(state, ui, "FILL", g.name.to_uppercase());
                         }
+                        state.mark_clean(&params.pattern);
                     }
-                    Err(e) => toast(state, ui, format!("COULD NOT READ {}: {}", stem(&path).to_uppercase(), e.to_uppercase())),
-                },
-                _ => {}
-            },
+                    Entry::File { path, .. } => match import::read_clip(&path) {
+                        Ok(clip) => {
+                            clip.load(&params.pattern, true, &stem(&path));
+                            state.mark_clean(&params.pattern);
+                            let skipped = if clip.skipped > 0 { format!(", {} NOTES NOT DRUMS", clip.skipped) } else { String::new() };
+                            toast(state, ui, format!("LOADED {} - {} BAR{}{}", stem(&path).to_uppercase(), clip.bars, if clip.bars == 1 { "" } else { "S" }, skipped));
+                            if let Some(bpm) = clip.bpm {
+                                note(state, ui, "FILE TEMPO", format!("{bpm:.0} bpm"));
+                            }
+                        }
+                        Err(e) => toast(state, ui, format!("COULD NOT READ {}: {}", stem(&path).to_uppercase(), e.to_uppercase())),
+                    },
+                    _ => {}
+                }
+            }
             Action::Drag(i) => match self.entries[i].clone() {
                 Entry::Builtin(g) => {
                     let g = &library()[g];
@@ -455,52 +609,110 @@ mod tests {
         }
     }
 
-    #[test]
-    fn the_root_lists_sections_and_my_midi() {
-        let e = build(&[], "", &user());
-        let names: Vec<_> = e.iter().filter_map(|e| if let Entry::Folder { name, .. } = e { Some(name.as_str()) } else { None }).collect();
-        assert_eq!(names, ["GROOVES", "FILLS", USER_ROOT]);
-        assert!(matches!(e.last(), Some(Entry::Folder { count: 4, .. })));
+    fn builtins(e: &[Entry]) -> Vec<&'static str> {
+        e.iter().filter_map(|e| if let Entry::Builtin(i) = e { Some(library()[*i].name.as_str()) } else { None }).collect()
     }
 
     #[test]
-    fn genre_folders_list_sub_folders_then_grooves() {
-        let e = build(&["GROOVES".into(), "Rock".into()], "", &user());
-        assert!(e.iter().all(|e| matches!(e, Entry::Folder { .. })), "Rock holds sub-folders");
-        assert!(e.len() >= 4);
-        let e = build(&["GROOVES".into(), "Rock".into(), "Metal".into()], "", &user());
+    fn grooves_are_one_flat_list_with_a_label_at_each_genre() {
+        let e = build(Tab::Grooves, None, None, &[], "", &user());
+        let headers: Vec<_> = e.iter().filter_map(|e| if let Entry::Header(h) = e { Some(h.as_str()) } else { None }).collect();
+        assert_eq!(headers, genres(Tab::Grooves));
+        assert!(headers.len() >= 10);
+        // No folders anywhere: just labels and grooves, and every groove (no fills) appears once.
+        assert!(e.iter().all(|e| matches!(e, Entry::Header(_) | Entry::Builtin(_))));
+        let names = builtins(&e);
+        assert_eq!(names.len(), library().iter().filter(|g| g.kind == grooves::Kind::Groove).count());
+        assert!(names.contains(&"Blast Beat") && names.contains(&"Hyper Roll") && !names.contains(&"Snare Build"));
+        // Sub-genres are not folders, so they never appear as entries of their own.
+        assert!(matches!(e[0], Entry::Header(_)));
+    }
+
+    #[test]
+    fn a_genre_filter_shows_all_of_it_with_no_labels() {
+        let e = build(Tab::Grooves, Some("Rock"), None, &[], "", &user());
         assert!(e.iter().all(|e| matches!(e, Entry::Builtin(_))));
-        let names: Vec<_> = e.iter().map(|e| if let Entry::Builtin(i) = e { library()[*i].name.as_str() } else { "" }).collect();
-        assert!(names.contains(&"Blast Beat"));
+        let names = builtins(&e);
+        // Every sub-genre of rock is in the one list.
+        for n in ["Backbeat", "Half-Time", "D-Beat", "Blast Beat", "Straight Pop"] {
+            assert_eq!(names.contains(&n), n != "Straight Pop", "{n}");
+        }
+        assert!(e.iter().all(|e| matches!(e, Entry::Builtin(i) if library()[*i].path[1] == "Rock")));
+        let hh = build(Tab::Grooves, Some("Hip-Hop"), None, &[], "", &user());
+        assert!(builtins(&hh).len() >= 15, "the hip-hop sub-genres share one list");
+        assert!(build(Tab::Grooves, Some("Nope"), None, &[], "", &user()).is_empty());
+    }
+
+    #[test]
+    fn sub_genre_tags_narrow_a_genre_without_the_keyboard() {
+        assert_eq!(sub_genres(Tab::Grooves, "Rock"), ["Classic", "Half-Time", "Punk", "Metal"]);
+        assert!(sub_genres(Tab::Fills, "Toms").is_empty());
+        assert!(sub_genres(Tab::MyMidi, "Rock").is_empty());
+        let metal = build(Tab::Grooves, Some("Rock"), Some("Metal"), &[], "", &user());
+        let names = builtins(&metal);
+        assert!(names.contains(&"Blast Beat") && names.contains(&"Double Kick"));
+        assert!(!names.contains(&"Backbeat") && !names.contains(&"D-Beat"));
+        assert!(names.len() >= 6);
+        // Every sub-genre is reachable, and together they cover the whole genre.
+        let all = builtins(&build(Tab::Grooves, Some("Hip-Hop"), None, &[], "", &user())).len();
+        let parts: usize = sub_genres(Tab::Grooves, "Hip-Hop").iter().map(|s| builtins(&build(Tab::Grooves, Some("Hip-Hop"), Some(s), &[], "", &user())).len()).sum();
+        assert_eq!(all, parts);
+        // A tag without a genre does nothing: the whole list shows.
+        let e = build(Tab::Grooves, None, Some("Metal"), &[], "", &user());
+        assert!(builtins(&e).len() > builtins(&metal).len());
+    }
+
+    #[test]
+    fn fills_are_their_own_flat_list() {
+        let e = build(Tab::Fills, None, None, &[], "", &user());
+        assert!(builtins(&e).iter().all(|n| library().iter().find(|g| g.name == *n).unwrap().kind == grooves::Kind::Fill));
+        assert!(builtins(&e).contains(&"Tom Run Down"));
+        assert!(!genres(Tab::Fills).is_empty());
+        assert!(genres(Tab::MyMidi).is_empty());
+        let toms = build(Tab::Fills, Some("Toms"), None, &[], "", &user());
+        assert!(builtins(&toms).len() >= 5 && !builtins(&toms).contains(&"Snare Build"));
     }
 
     #[test]
     fn my_midi_offers_add_and_lists_roots_then_files() {
         let u = user();
-        let e = build(&[USER_ROOT.into()], "", &u);
+        let e = build(Tab::MyMidi, None, None, &[], "", &u);
         assert_eq!(e[0], Entry::AddFolder);
         assert!(matches!(&e[1], Entry::Folder { name, count: 4, root: Some(0) } if name == "Mine"));
-        let e = build(&[USER_ROOT.into(), "Mine".into()], "", &u);
+        let e = build(Tab::MyMidi, None, None, &["Mine".into()], "", &u);
         assert_eq!(e.len(), 3, "two sub-folders and one file");
         assert!(matches!(&e[2], Entry::File { path, .. } if path.ends_with("top.mid")));
-        let e = build(&[USER_ROOT.into(), "Mine".into(), "Rock".into()], "", &u);
+        let e = build(Tab::MyMidi, None, None, &["Mine".into(), "Rock".into()], "", &u);
         assert_eq!(e.len(), 2);
-        assert!(build(&[USER_ROOT.into(), "Nope".into()], "", &u).is_empty());
+        assert!(build(Tab::MyMidi, None, None, &["Nope".into()], "", &u).is_empty());
+    }
+
+    #[test]
+    fn every_genre_fits_on_a_chip() {
+        for tab in [Tab::Grooves, Tab::Fills] {
+            let all = genres(tab);
+            let shorts: Vec<_> = all.iter().map(|g| short_genre(g)).collect();
+            assert!(shorts.iter().all(|s| s.len() <= 8), "{shorts:?}");
+            let mut unique = shorts.clone();
+            unique.sort();
+            unique.dedup();
+            assert_eq!(unique.len(), shorts.len(), "two genres share a chip label: {shorts:?}");
+        }
     }
 
     #[test]
     fn search_spans_builtin_grooves_and_user_files() {
         let u = user();
-        let e = build(&[], "blast", &u);
+        let e = build(Tab::Grooves, None, None, &[], "blast", &u);
         assert!(e.iter().any(|e| matches!(e, Entry::Builtin(i) if library()[*i].name == "Blast Beat")));
-        let e = build(&[], "swing", &u);
+        let e = build(Tab::Grooves, None, None, &[], "swing", &u);
         assert!(e.iter().any(|e| matches!(e, Entry::File { path, .. } if path.ends_with("swing.mid"))));
         assert!(e.iter().any(|e| matches!(e, Entry::Builtin(i) if library()[*i].name == "Swing Ride")));
         // Every word has to match, in any order, against the name or the folders.
-        let e = build(&[], "metal blast", &u);
+        let e = build(Tab::Grooves, None, None, &[], "metal blast", &u);
         assert!(!e.is_empty() && e.iter().all(|e| matches!(e, Entry::Builtin(_))));
-        assert!(build(&[], "zzzzqq", &u).is_empty());
-        assert!(build(&[], "  ", &u).len() == 3, "blank search is the root");
+        assert!(build(Tab::Grooves, None, None, &[], "zzzzqq", &u).is_empty());
+        assert!(!build(Tab::Grooves, None, None, &[], "  ", &u).is_empty(), "a blank search is just the list");
     }
 
     #[test]
@@ -508,12 +720,6 @@ mod tests {
         let files: Vec<String> = (0..1000).map(|i| format!("loop{i}.mid")).collect();
         let refs: Vec<&str> = files.iter().map(String::as_str).collect();
         let u = UserLib { roots: vec![dir("Big", &refs, vec![])], version: 1, scanning: false };
-        assert_eq!(build(&[], "loop", &u).len(), MAX_RESULTS);
-    }
-
-    #[test]
-    fn fills_open_as_a_folder_of_folders() {
-        let e = build(&["FILLS".into()], "", &user());
-        assert!(e.len() >= 5 && e.iter().all(|e| matches!(e, Entry::Folder { .. })));
+        assert_eq!(build(Tab::Grooves, None, None, &[], "loop", &u).len(), MAX_RESULTS);
     }
 }

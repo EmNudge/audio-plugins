@@ -75,6 +75,8 @@ pub struct Pocket {
     events: EventBuf,
     played: EventBuf,
     out: OutNotes,
+    /// The host gave an audio input, so the buffer arrives holding the previous plugin's sound.
+    has_input: bool,
     sample_rate: f64,
     last_tempo: f64,
     /// A replaced sample kit waiting for somewhere it can be freed off the audio thread.
@@ -218,6 +220,7 @@ impl Default for Pocket {
             events: EventBuf::default(),
             played: EventBuf::default(),
             out: OutNotes::default(),
+            has_input: false,
             sample_rate: 44100.0,
             last_tempo: 120.0,
             parked: None,
@@ -232,7 +235,12 @@ impl Plugin for Pocket {
     const EMAIL: &'static str = "";
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
+    // With an audio input first, so a host that offers it lets whatever is before Pocket in the
+    // chain keep sounding; the kit is added on top. Output-only layouts follow for hosts that
+    // load it as a plain instrument.
     const AUDIO_IO_LAYOUTS: &'static [AudioIOLayout] = &[
+        AudioIOLayout { main_input_channels: NonZeroU32::new(2), main_output_channels: NonZeroU32::new(2), ..AudioIOLayout::const_default() },
+        AudioIOLayout { main_input_channels: NonZeroU32::new(1), main_output_channels: NonZeroU32::new(1), ..AudioIOLayout::const_default() },
         AudioIOLayout { main_output_channels: NonZeroU32::new(2), ..AudioIOLayout::const_default() },
         AudioIOLayout { main_output_channels: NonZeroU32::new(1), ..AudioIOLayout::const_default() },
     ];
@@ -294,8 +302,9 @@ impl Plugin for Pocket {
         )
     }
 
-    fn initialize(&mut self, _layout: &AudioIOLayout, config: &BufferConfig, _context: &mut impl InitContext<Self>) -> bool {
+    fn initialize(&mut self, layout: &AudioIOLayout, config: &BufferConfig, _context: &mut impl InitContext<Self>) -> bool {
         self.sample_rate = config.sample_rate as f64;
+        self.has_input = layout.main_input_channels.is_some();
         self.kit.set_sample_rate(config.sample_rate);
         let share = &self.seq.meter.samples;
         share.sample_rate.store(config.sample_rate as u32, Ordering::Relaxed);
@@ -430,7 +439,9 @@ impl Plugin for Pocket {
             let (l, r) = if sound { self.kit.next() } else { (0.0, 0.0) };
             let n = frame.len();
             for (ch, sample) in frame.iter_mut().enumerate() {
-                *sample = if n == 1 { (l + r) * 0.5 } else if ch == 0 { l } else { r } * level;
+                let kit = if n == 1 { (l + r) * 0.5 } else if ch == 0 { l } else { r } * level;
+                // Add to what came in, or, with no input, write it.
+                *sample = if self.has_input { *sample + kit } else { kit };
             }
         }
         ProcessStatus::KeepAlive

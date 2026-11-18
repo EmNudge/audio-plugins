@@ -28,11 +28,19 @@ Drum groove sequencer and browser, after MT Power Drum Kit 2's groove browser an
 
 ## Browser
 
-- Folders: GROOVES (by genre and sub-genre), FILLS, MY MIDI. Search covers all of it.
+- Three tabs: GROOVES, FILLS and MY MIDI. Grooves and fills are each one long scrolling list, with a
+  label where the genre changes. No folders to open.
+- A row of genre chips filters the list (ROCK, HIP-HOP, DNB, IDM ...). Pick a genre and its sub-genres
+  appear as tag chips (ROCK: CLASSIC, HALF-TIME, PUNK, METAL) to narrow it further with the mouse.
+  Each row also shows its tags under the name.
+- Search covers every groove, fill and file at once, by name, genre or sub-genre. Typing needs the
+  host to pass keys to the plugin; REAPER keeps most of them for its own shortcuts unless the FX
+  window is set to send all keyboard input to the plug-in. The chips work without a keyboard.
 - Click a groove to load it (locked drums stay). Click a fill to put it on the end of the pattern.
+  With AUTO on, picking one starts it playing if nothing else is running.
 - Drag any row out of the plugin to take it as a clip.
-- MY MIDI > ADD A FOLDER picks a folder. Notes that are not drums are ignored, and clips longer
-  than four bars are cut there.
+- MY MIDI follows the folders you add (+ ADD A FOLDER). Notes that are not drums are ignored, and
+  clips longer than four bars are cut there.
 
 ## Use
 
