@@ -63,3 +63,6 @@ name = "Pocket Groove Sequencer"
 
 [digger]
 name = "Digger Drum Sampler"
+
+[tympan]
+name = "Tympan Drum Kit"
