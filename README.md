@@ -43,6 +43,7 @@ Each plugin has its own crate under `plugins/`.
 **MIDI**
 
 - [`pocket`](plugins/pocket): drum groove sequencer and browser, with drag-to-DAW MIDI clips.
+- [`tympan`](plugins/tympan): physically modelled acoustic drums: a wave-equation head, a stick that collides with it, the air between two heads and a shell, in a dead space.
 - [`digger`](plugins/digger): drum sampler for your own WAV folders, with tags, switchable kits and browsing by mouse, keyboard or MIDI while the groove plays.
 
 ## Build and install
